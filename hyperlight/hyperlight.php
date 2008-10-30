@@ -256,8 +256,6 @@ abstract class HyperLanguage {
                 $nesting_rules
             );
         }
-
-        dump($this->_rules, "Rules");
     }
 
     protected function setMappings(array $mappings) {
@@ -364,7 +362,8 @@ class HyperLight {
             if (count($states) > 1) {
                 $n = count($states) - 1;
                 do {
-                    $rule = $this->_lang->rule($states[$n]);
+                    $rule = $this->_lang->rule($states[$n - 1]);
+                    $rule = $rule[$states[$n]];
                     --$n;
                     if ($n < 0)
                         throw new NoMatchingRuleException($states, $pos, $this->code);
@@ -399,7 +398,8 @@ class HyperLight {
                 $state = $states[count($states) - 1];
                 $this->emitPop($closest_hit[0]);
             }
-            else if ($this->_lang->rule($closest_rule) instanceof Rule) {
+            else if (array_key_exists($closest_rule, $this->_lang->rule($state))) {
+            //else if ($this->_lang->rule($closest_rule) instanceof Rule) {
                 // Push state.
                 array_push($states, $closest_rule);
                 $state = $closest_rule;
