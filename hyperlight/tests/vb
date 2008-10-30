@@ -1,0 +1,21 @@
+''' <summary id="a>b">This is a doc comment</summary>
+Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+    'set page title
+    Page.Title = "Something"
+    Dim r As String = "Say ""Hello"""
+    Dim i As Integer = 1234
+    Dim d As Double = 1.23
+#Region " Test region "
+    Dim s As Single = .123F
+    Dim l As Long = 123L
+    Dim ul As ULong = 123UL
+    Dim c As Char = "x"c
+#End Region
+    Dim h As Integer = &H0
+    Dim t As Date = #5/31/1993 1:15:30 PM#
+    Dim f As Single = 1.32e-5F
+    Rem specialities
+    Dim mysub = True
+    Dim sub2 = False
+    Dim [sub] = Nothing
+End Sub
