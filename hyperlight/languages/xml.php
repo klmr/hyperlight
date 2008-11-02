@@ -15,7 +15,7 @@ class XmlLanguage extends HyperLanguage {
         $inline = array('entity');
         $common = array('name', 'attribute' => array('double', 'single'));
 
-        $this->setStates(array(
+        $this->addStates(array(
             'init' => array_merge(array('tag', 'cdata'), $inline),
             'tag' => array_merge(array('preprocessor', 'meta'), $common),
             'preprocessor' => $common,
@@ -24,7 +24,7 @@ class XmlLanguage extends HyperLanguage {
             'attribute single' => $inline,
         ));
         
-        $this->setRules(array(
+        $this->addRules(array(
             'tag' => new Rule('/</', '/>/'),
             'cdata' => '/<!\[CDATA\[.*?\]\]>/',
             'name' => '/[a-z0-9:-]+/i',

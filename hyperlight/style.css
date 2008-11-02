@@ -12,7 +12,7 @@ body {
 }
 
 #head {
-    background: #A65030 url(hyperlight-logo) no-repeat center right;
+    background: #A65030;
     border-bottom:1px solid silver;
     border-bottom-style:solid;
     color:#A67B5B;
@@ -38,8 +38,8 @@ p {
  */
 
 pre.code {
-    background: #966B4B;
     background: #3f3f3f;
+    border: 1px solid silver;
     color: #dcdccc;
     font-family: Consolas;
     font-size: 0.9em;

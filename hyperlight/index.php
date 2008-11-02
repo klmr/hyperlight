@@ -1,4 +1,8 @@
-<!DOCTYPE html 
+<?php
+
+require 'hyperlight.php';
+
+?><!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -32,12 +36,12 @@
                     </li>
                     <li>
                     <p><strong>Full CSS support.</strong> One single CSS file can be used for all languages to give a consistent look &amp; feel. Elements may be nested for refinements (e.g. highlighting “TODO” items in comments):</p>
-                    <pre class="code">.comment { color: gray; }
-.comment .todo { font-weight: bold; }</pre>
+                    <pre class="code"><?php hyperlight(".comment { color: gray; }
+.comment .todo { font-weight: bold; }", 'css'); ?></pre>
                     <p>Further refinements are possible in order to differentiate similar elements. Consider the different classes of keywords:</p>
-                    <pre class="code">.keyword { color: #008; }
+                    <pre class="code"><?php hyperlight(".keyword { color: #008; }
 .keyword.type { color: #088; }
-.keyword.operator { font-weight: bold; }</pre>
+.keyword.operator { font-weight: bold; }", 'css'); ?></pre>
                     </li>
                 </ul>
 

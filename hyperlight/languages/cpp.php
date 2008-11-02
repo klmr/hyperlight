@@ -12,7 +12,7 @@ class CppLanguage extends HyperLanguage {
             )
         ));
 
-        $this->setStates(array(
+        $this->addStates(array(
             'init' => array(
                 'preprocessor',
                 'string',
@@ -24,10 +24,10 @@ class CppLanguage extends HyperLanguage {
             ),
         ));
 
-        $this->setRules(array(
+        $this->addRules(array(
             'preprocessor' => '/#\w+(?:\\\\\n|[^\\\\])*?\n/s',
-            'string' => Rule::DOUBLEQUOTESTRING,
-            'char' => Rule::SINGLEQUOTESTRING,
+            'string' => Rule::C_DOUBLEQUOTESTRING,
+            'char' => Rule::C_SINGLEQUOTESTRING,
             'number' => Rule::C_NUMBER,
             'comment' => Rule::C_COMMENT,
             'keyword' => array(
