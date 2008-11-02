@@ -97,35 +97,82 @@ abstract class HyperLanguage {
     const WEBSITE = 5;
     const EMAIL = 6;
 
+    public function compile() {
+        return new HyperLightCompiledLanguage(
+            $this->_info,
+            $this->_states,
+            $this->_rules,
+            $this->_mappings,
+            $this->_caseInsensitive
+        );
+    }
+
+    protected function setCaseInsensitive($value) {
+        $this->_caseInsensitive = $value;
+    }
+
+    protected function setStates(array $states) {
+        $this->_states = $states;
+    }
+
+    protected function setRules(array $rules) {
+        $this->_rules = $rules;
+    }
+
+    protected function setMappings(array $mappings) {
+        // TODO Implement nested mappings.
+        $this->_mappings = $mappings;
+    }
+
+    protected function setInfo(array $info) {
+        $this->_info = $info;
+    }
+}
+
+class HyperLightCompiledLanguage {
+    private $_info;
+    private $_states;
+    private $_rules;
+    private $_mappings;
+    private $_caseInsensitive;
+
+    public function __construct($info, $states, $rules, $mappings, $caseInsensitive) {
+        $this->_info = $info;
+        $this->_caseInsensitive = $caseInsensitive;
+        $this->_states = $this->compileStates($states);
+        $this->_rules = $this->compileRules($rules);
+        $this->_mappings = $mappings;
+    }
+
     public function name() {
-        return $this->_info[self::NAME];
+        return $this->_info[HyperLanguage::NAME];
     }
 
     public function autorName() {
-        if (!array_key_exists(self::AUTHOR, $this->_info))
+        if (!array_key_exists(HyperLanguage::AUTHOR, $this->_info))
             return null;
-        $author = $this->_info[self::AUTHOR];
+        $author = $this->_info[HyperLanguage::AUTHOR];
         if (is_string($author))
             return $author;
-        if (!array_key_exists(self::NAME, $author))
+        if (!array_key_exists(HyperLanguage::NAME, $author))
             return null;
-        return $author[self::NAME];
+        return $author[HyperLanguage::NAME];
     }
 
     public function authorWebsite() {
-        if (!array_key_exists(self::AUTHOR, $this->_info) or
-            !is_array($this->_info[self::AUTHOR]) or
-            !array_key_exists(self::WEBSITE, $this->_info[self::AUTHOR]))
+        if (!array_key_exists(HyperLanguage::AUTHOR, $this->_info) or
+            !is_array($this->_info[HyperLanguage::AUTHOR]) or
+            !array_key_exists(HyperLanguage::WEBSITE, $this->_info[HyperLanguage::AUTHOR]))
             return null;
-        return $this->_info[self::AUTHOR][self::WEBSITE];
+        return $this->_info[HyperLanguage::AUTHOR][HyperLanguage::WEBSITE];
     }
 
     public function authorEmail() {
-        if (!array_key_exists(self::AUTHOR, $this->_info) or
-            !is_array($this->_info[self::AUTHOR]) or
-            !array_key_exists(self::EMAIL, $this->_info[self::AUTHOR]))
+        if (!array_key_exists(HyperLanguage::AUTHOR, $this->_info) or
+            !is_array($this->_info[HyperLanguage::AUTHOR]) or
+            !array_key_exists(HyperLanguage::EMAIL, $this->_info[HyperLanguage::AUTHOR]))
             return null;
-        return $this->_info[self::AUTHOR][self::EMAIL];
+        return $this->_info[HyperLanguage::AUTHOR][HyperLanguage::EMAIL];
     }
 
     public function authorContact() {
@@ -163,12 +210,8 @@ abstract class HyperLanguage {
         }
     }
 
-    protected function setCaseInsensitive($value) {
-        $this->_caseInsensitive = $value;
-    }
-
-    protected function setStates(array $states) {
-        $this->_states = array();
+    private function compileStates($states) {
+        $ret = array();
 
         foreach ($states as $name => $state) {
             $newstate = array();
@@ -196,11 +239,13 @@ abstract class HyperLanguage {
                     $newstate[] = $elem;
             }
 
-            $this->_states[$name] = $newstate;
+            $ret[$name] = $newstate;
         }
+
+        return $ret;
     }
 
-    protected function setRules(array $rules) {
+    private function compileRules($rules) {
         $tmp = array();
 
         // Preprocess keyword list and flatten nested lists:
@@ -234,7 +279,7 @@ abstract class HyperLanguage {
             } // if (is_array($rule))
         } // foreach
 
-        $this->_rules = array();
+        $ret = array();
 
         foreach ($this->_states as $name => $state) {
             $regex_rules = array();
@@ -251,20 +296,13 @@ abstract class HyperLanguage {
                 }
             }
 
-            $this->_rules[$name] = array_merge(
+            $ret[$name] = array_merge(
                 array(preg_merge('|', $regex_rules, $regex_names)),
                 $nesting_rules
             );
         }
-    }
 
-    protected function setMappings(array $mappings) {
-        // TODO Implement nested mappings.
-        $this->_mappings = $mappings;
-    }
-
-    protected function setInfo(array $info) {
-        $this->_info = $info;
+        return $ret;
     }
 
     private static function isAssocArray(array $array) {
@@ -280,7 +318,10 @@ class HyperLight {
     private $_lang;
     private $_result;
 
+    private static $_languageCache = array();
+
     public function __construct($code, $lang) {
+        // Normalize line breaks.
         $this->_code = preg_replace('/\r\n?/', "\n", $code);
         $this->_lang = $this->languageDefinition(strtolower($lang));
     }
@@ -301,9 +342,13 @@ class HyperLight {
     }
 
     private function languageDefinition($lang) {
-        require_once "languages/$lang.php";
-        $klass = ucfirst("{$lang}Language");
-        return new $klass();
+        if (!isset(self::$_languageCache[$lang])) {
+            require_once "languages/$lang.php";
+            $klass = ucfirst("{$lang}Language");
+            $language = new $klass();
+            self::$_languageCache[$lang] = $language->compile();
+        }
+        return self::$_languageCache[$lang];
     }
 
     private function renderCode() {
@@ -524,6 +569,14 @@ function hyperlight_test($file, $lang = null) {
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
 hyperlight_test('XML');
+
+?>
+<h2>Test runs</h2>
+<?php
+
+require 'tests.php';
+
+Test::run('PregMerge');
 
 ?>
 </body></html>
