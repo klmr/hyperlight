@@ -14,7 +14,7 @@ class VbLanguage extends HyperLanguage {
 
         $this->setCaseInsensitive(true);
 
-        $this->setStates(
+        $this->addStates(
             array(
                 'init' => array(
                     'string',
@@ -29,7 +29,7 @@ class VbLanguage extends HyperLanguage {
             )
         );
 
-        $this->setRules(
+        $this->addRules(
             array(
                 'string' => new Rule('/"/', '/"c?/i'),
                 'number' => '/(?:&[HO])?\d+(?:\.\d*)?(?:e[+-]?\d+)?U?[SILDFR%@!#&]?|\.\d+[FR!#]?/',

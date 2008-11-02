@@ -40,8 +40,12 @@ class Rule {
 
     const C_IDENTIFIER = '/[a-z_][a-z0-9_]*/i';
     const C_COMMENT = '#//.*?\n|/\*.*?\*/#s';
-    const DOUBLEQUOTESTRING = '/L?"(?:\\\\"|.)*?"/';
-    const SINGLEQUOTESTRING = "/L?'(?:\\\\'|.)*?'/";
+    const C_MULTILINECOMMENT = '#/\*.*?\*/#s';
+    const DOUBLEQUOTESTRING = '/"(?:\\\\"|.)*?"/s';
+    const SINGLEQUOTESTRING = "/'(?:\\\\'|.)*?'/s";
+    const C_DOUBLEQUOTESTRING = '/L?"(?:\\\\"|.)*?"/s';
+    const C_SINGLEQUOTESTRING = "/L?'(?:\\\\'|.)*?'/s";
+    const STRING = '/"(?:\\\\"|.)*?"|\'(?:\\\\\'|.)*?\'/s';
     const C_NUMBER = '/
         (?: # Integer followed by optional fractional part.
             (?:
@@ -81,8 +85,8 @@ class Rule {
 }
 
 abstract class HyperLanguage {
-    private $_states;
-    private $_rules;
+    private $_states = array();
+    private $_rules = array();
     private $_mappings = array();
     private $_info = array();
     private $_caseInsensitive = false;
@@ -98,7 +102,7 @@ abstract class HyperLanguage {
     const EMAIL = 6;
 
     public function compile() {
-        return new HyperLightCompiledLanguage(
+        return new HyperlightCompiledLanguage(
             $this->_info,
             $this->_states,
             $this->_rules,
@@ -111,25 +115,40 @@ abstract class HyperLanguage {
         $this->_caseInsensitive = $value;
     }
 
-    protected function setStates(array $states) {
-        $this->_states = $states;
+    protected function addStates(array $states) {
+        $this->_states = self::mergeProperties($this->_states, $states);
     }
 
-    protected function setRules(array $rules) {
-        $this->_rules = $rules;
+    protected function addRules(array $rules) {
+        $this->_rules = self::mergeProperties($this->_rules, $rules);
     }
 
-    protected function setMappings(array $mappings) {
+    protected function addMappings(array $mappings) {
         // TODO Implement nested mappings.
-        $this->_mappings = $mappings;
+        $this->_mappings = array_merge($this->_mappings, $mappings);
     }
 
     protected function setInfo(array $info) {
         $this->_info = $info;
     }
+
+    private static function mergeProperties(array $old, array $new) {
+        foreach ($new as $key => $value) {
+            if (is_string($key)) {
+                if (isset($old[$key]) and is_array($old[$key]))
+                    $old[$key] = array_merge($old[$key], $new);
+                else
+                    $old[$key] = $value;
+            }
+            else
+                $old[] = $value;
+        }
+
+        return $old;
+    }
 }
 
-class HyperLightCompiledLanguage {
+class HyperlightCompiledLanguage {
     private $_info;
     private $_states;
     private $_rules;
@@ -313,10 +332,11 @@ class HyperLightCompiledLanguage {
     }
 }
 
-class HyperLight {
+class Hyperlight {
     private $_code;
     private $_lang;
     private $_result;
+    private $_omitSpans;
 
     private static $_languageCache = array();
 
@@ -352,6 +372,7 @@ class HyperLight {
     }
 
     private function renderCode() {
+        $this->_omitSpans = array();
         $code = $this->_code;
         $pos = 0;
         $len = strlen($code);
@@ -366,19 +387,6 @@ class HyperLight {
             $closest_hit = array('', $len);
             // The rule that found this token.
             $closest_rule = null;
-
-            /*
-            $transitions = $this->_lang->state($state);
-
-            foreach ($transitions as $next) {
-                $rule = $this->_lang->rule($next);
-
-                if ($rule instanceof Rule)
-                    $rule = $rule->start();
-
-                $this->matchCloser($rule, $next, $pos, $closest_hit, $closest_rule);
-            }*/
-
             $rules = $this->_lang->rule($state);
 
             foreach ($rules as $name => $rule) {
@@ -444,7 +452,6 @@ class HyperLight {
                 $this->emitPop($closest_hit[0]);
             }
             else if (array_key_exists($closest_rule, $this->_lang->rule($state))) {
-            //else if ($this->_lang->rule($closest_rule) instanceof Rule) {
                 // Push state.
                 array_push($states, $closest_rule);
                 $state = $closest_rule;
@@ -492,17 +499,26 @@ class HyperLight {
     private function emitPartial($token, $class) {
         $token = self::htmlentities($token);
         $class = $this->_lang->className($class);
-        $this->write("<span class=\"$class\">$token");
+        if ($class === '') {
+            $this->write($token);
+            array_push($this->_omitSpans, true);
+        }
+        else {
+            $this->write("<span class=\"$class\">$token");
+            array_push($this->_omitSpans, false);
+        }
     }
 
     private function emitPop($token = '') {
         $token = self::htmlentities($token);
-        $this->write("$token</span>");
+        if (array_pop($this->_omitSpans))
+            $this->write($token);
+        else
+            $this->write("$token</span>");
     }
 
     private function write($text) {
         $this->_result .= $text;
-        //echo $text;
     }
 
     private static function htmlentitiesCallback($match) {
@@ -515,17 +531,30 @@ class HyperLight {
 
     private static function htmlentities($text) {
         return preg_replace_callback(
-            '/[<>&]/', array('HyperLight', 'htmlentitiesCallback'), $text
+            '/[<>&]/', array('Hyperlight', 'htmlentitiesCallback'), $text
         );
     }
 }
+
+/**
+ * <code>echo</code>s a highlighted code.
+ *
+ * @param string $code The code.
+ * @param string $lang The language of the code.
+ */
+function hyperlight($code, $lang) {
+    $hl = new Hyperlight($code, $lang);
+    $hl->theResult();
+}
+
+if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
 
 function hyperlight_test($file, $lang = null) {
     if ($lang === null)
         $lang = $file;
     $fname = 'tests/' . strtolower($file);
     $code = file_get_contents($fname);
-    $hl = new HyperLight($code, $lang);
+    $hl = new Hyperlight($code, $lang);
     $pretty_name = $hl->language()->name();
     $title = $file === $lang ?
         "<h2>Test for language {$pretty_name}</h2>" :
@@ -538,7 +567,7 @@ function hyperlight_test($file, $lang = null) {
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>HyperLight Syntax Highlighter</title>
+    <title>Hyperlight Syntax Highlighter</title>
     <style type="text/css">
 .keyword { font-weight: bold; color: #008; }
 .keyword.type { background: #EEF; }
@@ -564,7 +593,7 @@ function hyperlight_test($file, $lang = null) {
 .cdata { font-style: italic; }
     </style>
 </head>
-<body><h1>HyperLight tests</h1><?php
+<body><h1>Hyperlight tests</h1><?php
 
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
@@ -579,4 +608,8 @@ require 'tests.php';
 Test::run('PregMerge');
 
 ?>
-</body></html>
+</body></html><?php
+
+endif;
+
+?>

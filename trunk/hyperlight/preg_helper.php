@@ -51,6 +51,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
 
         // Get delimiters and modifiers:
 
+        /*
         if (preg_match('/^(.)(.*)\\1([imsxeADSUXJu]*)$/s', $expression, $matches) === false)
             die("Sub-expression $expression didn't match pattern");
             //return false;
@@ -64,6 +65,14 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             $sub_expr = str_replace('/', '\\/', $sub_expr);
         }
         $modifiers = $matches[3] === '' ? array() : str_split(trim($matches[3]));
+         */
+
+        $stripped = preg_strip($expression);
+
+        if ($stripped === false)
+            return false;
+
+        list($sub_expr, $modifiers) = $stripped;
 
         // Calculate which modifiers are new and which are obsolete.
 
@@ -83,6 +92,32 @@ function preg_merge($glue, array $expressions, array $names = array()) {
     }
 
     return '/' . implode($glue, $result) . '/';
+}
+
+/**
+ * Strips a regular expression string off its delimiters and modifiers.
+ *
+ * @param string $expression The regular expression string to strip.
+ * @return array An array whose first entry is the expression itself, the
+ *      second an array of delimiters. If the argument is not a valid regular
+ *      expression, returns <code>FALSE</code>.
+ *
+ */
+function preg_strip($expression) {
+    if (preg_match('/^(.)(.*)\\1([imsxeADSUXJu]*)$/s', $expression, $matches) === false)
+        return false;
+
+    $delim = $matches[1];
+    $sub_expr = $matches[2];
+    if ($delim !== '/') {
+        // Replace occurrences by the escaped delimiter by its unescaped
+        // version and escape new delimiter.
+        $sub_expr = str_replace("\\$delim", $delim, $sub_expr);
+        $sub_expr = str_replace('/', '\\/', $sub_expr);
+    }
+    $modifiers = $matches[3] === '' ? array() : str_split(trim($matches[3]));
+
+    return array($sub_expr, $modifiers);
 }
 
 ?>
