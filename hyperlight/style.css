@@ -12,17 +12,15 @@ body {
 }
 
 #head {
-    background: #A65030;
+    background: #A65030 url(hyperlight-logo) no-repeat center right;
     border-bottom:1px solid silver;
     border-bottom-style:solid;
     color:#A67B5B;
-    height:20%;
-    max-height:300px;
-    min-height:200px;
+    height:180px;
 }
 
 #content {
-    background: #A67B5B;;
+    background: #A67B5B;
 }
 
 div.text {
@@ -33,6 +31,11 @@ div.text {
 p {
     text-align: justify;
 }
+
+/*
+ * Color scheme for code is a simplified version of the VIM Zenburn scheme:
+ * http://slinky.imukuppi.org/zenburn/
+ */
 
 pre.code {
     background: #966B4B;
