@@ -32,7 +32,7 @@ class CssLanguage extends HyperLanguage {
             'identifier' => "/$nmstart$nmchar*/i",
             'string' => "/$string/$strmod",
             'color' => "/#$hex{3}(?:$hex{3})?/i",
-            'number' => '/[+-]?(?:\d+|\d*\.\d+)(%|em|ex|px|pt|in|cm|mm|pc)?/',
+            'number' => '/[+-]?(?:\d+|\d*\.\d+)(%|em|ex|px|pt|in|cm|mm|pc|deg|g?rad|m?s|k?Hz)?/',
             'uri' => "/url\(\s*(?:$string|[^\)]*)\s*\)/$strmod",
         ));
 
