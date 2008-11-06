@@ -83,18 +83,19 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             // NB: This is bound to be NP hard. Consider replacing.
             $backref_expr = '/
                 (               # Only match when not escaped:
-                    [^\\]       # guarantee an even number of backslashes
+                    [^\\\\]     # guarantee an even number of backslashes
                     (\\\\)*\\1  # (twice n, preceded by something else).
                 )?
                 \\\\ (\d)       # Backslash followed by a digit.
             /x';
-            static $cb;
-            if (!isset($cb))
-               $cb = create_function(
+            preg_replace_callback(
+                $backref_expr,
+                create_function(
                     '$m',
-                    "return \$m[1] . '\\' . (int(\$m[2]) + $capture_count);"
-                );
-            preg_replace_callback($backref_expr, $cb, $sub_expr);
+                    'return $m[1] . "\\\\" . ((int)$m[2] + ' . $capture_count . ');'
+                ),
+                $sub_expr
+            );
             $capture_count += $number_of_captures;
         }
         
