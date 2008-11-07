@@ -605,9 +605,9 @@ hyperlight_test('XML');
 
 require 'tests.php';
 
+?><pre><?php
 Test::run('PregMerge');
-
-?>
+?></pre>
 </body></html><?php
 
 endif;
