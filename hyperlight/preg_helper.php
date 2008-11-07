@@ -37,7 +37,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
     // Sanity check …
     //
 
-    $use_names = $names !== null and count($names) !== 0;
+    $use_names = ($names !== null and count($names) !== 0);
 
     if (
         $use_names and count($names) !== count($expressions) or
@@ -82,17 +82,17 @@ function preg_merge($glue, array $expressions, array $names = array()) {
         if ($number_of_captures > 0) {
             // NB: This is bound to be NP hard. Consider replacing.
             $backref_expr = '/
-                (               # Only match when not escaped:
-                    [^\\\\]     # guarantee an even number of backslashes
-                    (\\\\)*\\1  # (twice n, preceded by something else).
-                )?
-                \\\\ (\d)       # Backslash followed by a digit.
+                (                # Only match when not escaped:
+                    [^\\\\]      # guarantee an even number of backslashes
+                    (\\\\*?)\\2  # (twice n, preceded by something else).
+                )
+                \\\\ (\d)        # Backslash followed by a digit.
             /x';
-            preg_replace_callback(
+            $sub_expr = preg_replace_callback(
                 $backref_expr,
                 create_function(
                     '$m',
-                    'return $m[1] . "\\\\" . ((int)$m[2] + ' . $capture_count . ');'
+                    'return $m[1] . "\\\\" . ((int)$m[3] + ' . $capture_count . ');'
                 ),
                 $sub_expr
             );
