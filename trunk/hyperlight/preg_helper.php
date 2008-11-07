@@ -5,7 +5,9 @@
  *
  * This function takes care of individual modifiers so it's safe to use
  * <em>different</em> modifiers on the individual expressions. The order of
- * sub-matches is preserved as well, but the numbering isn't.
+ * sub-matches is preserved as well. Numbered back-references are adapted to
+ * the new overall sub-match count. This means that it's safe to use numbered
+ * back-refences in the individual expressions!
  * If {@link $names} is given, the individual expressions are captured in
  * named sub-matches using the contents of that array as names.
  * Matching pair-delimiters (e.g. <code>"{…}"</code>) are currently
@@ -15,7 +17,7 @@
  * Behaviour is undefined if they aren't.
  *
  * This function was created after a {@link http://stackoverflow.com/questions/244959/
- * StackOverflow discussion}. Most of it was written or thought of by users
+ * StackOverflow discussion}. Much of it was written or thought of by
  * “porneL” and “eyelidlessness”. Many thanks to both of them.
  *
  * @param string $glue  A string to insert between the individual expressions.
@@ -45,7 +47,6 @@ function preg_merge($glue, array $expressions, array $names = array()) {
     )
         return false;
 
-    $active_modifiers = array();
     $result = array();
     // For keeping track of the names for sub-matches.
     $names_count = 0;
@@ -98,22 +99,15 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             );
             $capture_count += $number_of_captures;
         }
+
+        //
+        // Last, construct the new sub-match:
+        //
         
-        //
-        // Calculate which modifiers are new and which are obsolete:
-        //
-
-        $cancel_modifiers = array_diff($active_modifiers, $modifiers);
-        $active_modifiers = $modifiers;
-
-        $new_modifiers = implode('', $active_modifiers);
-        $old_modifiers = empty($cancel_modifiers) ?
-            '' : '-' . implode('', $cancel_modifiers);
-        $sub_modifiers = "(?$new_modifiers$old_modifiers)";
+        $modifiers = implode('', $modifiers);
+        $sub_modifiers = "(?$modifiers)";
         if ($sub_modifiers === '(?)')
             $sub_modifiers = '';
-
-        // Last, construct the new sub-match:
 
         $sub_name = $use_names ? "?<$name>" : '?:';
         $new_expr = "($sub_name$sub_modifiers$sub_expr)";
