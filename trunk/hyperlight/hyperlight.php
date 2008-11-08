@@ -598,6 +598,7 @@ function hyperlight_test($file, $lang = null) {
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
 hyperlight_test('XML');
+hyperlight_test('style.css', 'css');
 
 ?>
 <h2>Test runs</h2>

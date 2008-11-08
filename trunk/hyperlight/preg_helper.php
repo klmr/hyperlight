@@ -23,6 +23,9 @@
  * @param string $glue  A string to insert between the individual expressions.
  *      This should usually be either the empty string, indicating
  *      concatenation, or the pipe (<code>|</code>), indicating alternation.
+ *      Notice that this string might have to be escaped since it is treated
+ *      like a normal character in a regular expression (i.e. <code>/</code>)
+ *      will end the expression and result in an invalid output.
  * @param array $expressions    The expressions to merge. The expressions may
  *      have arbitrary different delimiters and modifiers.
  * @param array $names  Optional. This is either an empty array or an array of
@@ -35,9 +38,7 @@
 function preg_merge($glue, array $expressions, array $names = array()) {
     // … then, a miracle occurs.
 
-    //
     // Sanity check …
-    //
 
     $use_names = ($names !== null and count($names) !== 0);
 
@@ -57,9 +58,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
         if ($use_names)
             $name = str_replace(' ', '_', $names[$names_count++]);
 
-        //
         // Get delimiters and modifiers:
-        //
 
         $stripped = preg_strip($expression);
 
@@ -68,9 +67,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
 
         list($sub_expr, $modifiers) = $stripped;
 
-        //
         // Re-adjust backreferences:
-        //
         
         // We assume that the expression is correct and therefore don't check
         // for matching parentheses.
@@ -81,7 +78,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             return false;
 
         if ($number_of_captures > 0) {
-            // NB: This is bound to be NP hard. Consider replacing.
+            // NB: This looks NP-hard. Consider replacing.
             $backref_expr = '/
                 (                # Only match when not escaped:
                     [^\\\\]      # guarantee an even number of backslashes
@@ -100,9 +97,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             $capture_count += $number_of_captures;
         }
 
-        //
         // Last, construct the new sub-match:
-        //
         
         $modifiers = implode('', $modifiers);
         $sub_modifiers = "(?$modifiers)";
