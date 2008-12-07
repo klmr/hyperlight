@@ -161,8 +161,6 @@ class HyperlightCompiledLanguage {
         $this->_states = $this->compileStates($states);
         $this->_rules = $this->compileRules($rules);
         $this->_mappings = $mappings;
-
-        dump($this->_rules, "Compiled rules");
     }
 
     public function name() {
