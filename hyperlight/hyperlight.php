@@ -161,6 +161,8 @@ class HyperlightCompiledLanguage {
         $this->_states = $this->compileStates($states);
         $this->_rules = $this->compileRules($rules);
         $this->_mappings = $mappings;
+
+        dump($this->_rules, "Compiled rules");
     }
 
     public function name() {
@@ -591,10 +593,22 @@ function hyperlight_test($file, $lang = null) {
 
 .entity { color: #800; }
 .cdata { font-style: italic; }
+
+pre span[class]:before, pre span[class]:after {
+    background: #FFC;
+    color: black;
+    font-family: Lucida Grande;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 0.6em;
+}
+pre span[class]:before { content: '‹' attr(class) '›'; }
+pre span[class]:after { content: '‹/' attr(class) '›'; }
     </style>
 </head>
 <body><h1>Hyperlight tests</h1><?php
 
+hyperlight_test('simple.css', 'css');
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
 hyperlight_test('XML');

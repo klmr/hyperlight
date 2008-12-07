@@ -24,8 +24,8 @@
  *      This should usually be either the empty string, indicating
  *      concatenation, or the pipe (<code>|</code>), indicating alternation.
  *      Notice that this string might have to be escaped since it is treated
- *      like a normal character in a regular expression (i.e. <code>/</code>)
- *      will end the expression and result in an invalid output.
+ *      as a normal character in a regular expression (i.e. <code>/</code> will
+ *      end the expression and result in an invalid output).
  * @param array $expressions    The expressions to merge. The expressions may
  *      have arbitrary different delimiters and modifiers.
  * @param array $names  Optional. This is either an empty array or an array of
