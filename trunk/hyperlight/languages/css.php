@@ -45,7 +45,7 @@ class CssLanguage extends HyperLanguage {
             'id' => 'keyword type',
             'class' => 'keyword literal',
             'pseudoclass' => 'keyword operator',
-            'block' => '',
+            #'block' => '',
             'color' => 'string',
         ));
     }
