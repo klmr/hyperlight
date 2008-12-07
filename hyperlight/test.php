@@ -61,6 +61,7 @@ Hello, world!</pre>
 <?php
 
 hyperlight_test('simple.css', 'css');
+hyperlight_test('preg_helper.php', 'php');
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
 hyperlight_test('XML');
