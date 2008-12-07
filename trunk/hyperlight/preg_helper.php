@@ -1,30 +1,54 @@
 <?php
 
 /**
+ * Copyright 2008 Konrad Rudolph
+ * All rights reserved.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
  * Merges several regular expressions into one, using the indicated 'glue'.
  *
  * This function takes care of individual modifiers so it's safe to use
- * <em>different</em> modifiers on the individual expressions. The order of
+ * <i>different</i> modifiers on the individual expressions. The order of
  * sub-matches is preserved as well. Numbered back-references are adapted to
  * the new overall sub-match count. This means that it's safe to use numbered
  * back-refences in the individual expressions!
  * If {@link $names} is given, the individual expressions are captured in
  * named sub-matches using the contents of that array as names.
- * Matching pair-delimiters (e.g. <code>"{…}"</code>) are currently
- * <strong>not</strong> supported.
+ * Matching pair-delimiters (e.g. <var>"{…}"</var>) are currently
+ * <b>not</b> supported.
  *
  * The function assumes that all regular expressions are well-formed.
  * Behaviour is undefined if they aren't.
  *
- * This function was created after a {@link http://stackoverflow.com/questions/244959/
- * StackOverflow discussion}. Much of it was written or thought of by
- * “porneL” and “eyelidlessness”. Many thanks to both of them.
+ * This function was created after a
+ * {@link http://stackoverflow.com/questions/244959/ StackOverflow discussion}.
+ * Much of it was written or thought of by “porneL” and “eyelidlessness”. Many
+ * thanks to both of them.
  *
  * @param string $glue  A string to insert between the individual expressions.
  *      This should usually be either the empty string, indicating
- *      concatenation, or the pipe (<code>|</code>), indicating alternation.
+ *      concatenation, or the pipe (<var>"|"</var>), indicating alternation.
  *      Notice that this string might have to be escaped since it is treated
- *      as a normal character in a regular expression (i.e. <code>/</code> will
+ *      as a normal character in a regular expression (i.e. <var>"/"</var> will
  *      end the expression and result in an invalid output).
  * @param array $expressions    The expressions to merge. The expressions may
  *      have arbitrary different delimiters and modifiers.
@@ -33,7 +57,7 @@
  *      the strings of this array are used to create named sub-matches for the
  *      expressions.
  * @return string An string representing a regular expression equivalent to the
- *      merged expressions. Returns <code>FALSE</code> if an error occurred.
+ *      merged expressions. Returns <var>FALSE</var> if an error occurred.
  */
 function preg_merge($glue, array $expressions, array $names = array()) {
     // … then, a miracle occurs.
@@ -114,13 +138,13 @@ function preg_merge($glue, array $expressions, array $names = array()) {
 
 /**
  * Strips a regular expression string off its delimiters and modifiers.
- * Additionally, normalize the delimiters (i.e. reformat the pattern so that
- * it could have used '/' as delimiter).
+ * Additionally, normalizes the delimiters (i.e. reformats the pattern so that
+ * it could have used <var>"/"</var> as delimiter).
  *
  * @param string $expression The regular expression string to strip.
  * @return array An array whose first entry is the expression itself, the
  *      second an array of delimiters. If the argument is not a valid regular
- *      expression, returns <code>FALSE</code>.
+ *      expression, returns <var>FALSE</var>.
  *
  */
 function preg_strip($expression) {
