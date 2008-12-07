@@ -466,12 +466,6 @@ class Hyperlight {
     private function matchCloser($expr, $next, $pos, &$closest_hit, &$closest_rule) {
         $matches = array();
         if (preg_match($expr, $this->_code, $matches, PREG_OFFSET_CAPTURE, $pos) == 1) {
-            /*
-            // Zero-length hit: ignore.
-            
-            if (strlen($matches[0][0]) == 0)
-                return;*/
-
             if (
                 (
                     // Two hits at same position -- compare length
@@ -537,134 +531,18 @@ class Hyperlight {
 }
 
 /**
- * <code>echo</code>s a highlighted code.
+ * <var>echo</var>s a highlighted code.
  *
  * @param string $code The code.
  * @param string $lang The language of the code.
+ * @param string $tag The surrounding tag to use.
  */
-function hyperlight($code, $lang) {
+function hyperlight($code, $lang, $tag = "pre") {
+    $lang = strtolower($lang);
     $hl = new Hyperlight($code, $lang);
+    echo "<$tag class=\"source-code $lang\">";
     $hl->theResult();
+    echo "</$tag>";
 }
-
-if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
-
-function hyperlight_test($file, $lang = null) {
-    if ($lang === null)
-        $lang = $file;
-    $fname = 'tests/' . strtolower($file);
-    $code = file_get_contents($fname);
-    $hl = new Hyperlight($code, $lang);
-    $pretty_name = $hl->language()->name();
-    $title = $file === $lang ?
-        "<h2>Test for language {$pretty_name}</h2>" :
-        "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
-    echo $title;
-    ?><pre class="<?php echo strtolower($lang); ?>"><?php $hl->theResult(); ?></pre><?php
-}
-
-?><!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>Hyperlight Syntax Highlighter</title>
-    <style type="text/css">
-/*
-.keyword { font-weight: bold; color: #008; }
-.keyword.type { background: #EEF; }
-.keyword.literal { background: #DFD; }
-.keyword.operator { background: #EEE; }
-.preprocessor { background: #DDD; }
-.keyword.preprocessor { color: #448; }
-.number { color: #880; }
-.comment { background: #EFE; color: #080; }
-.comment .doc { color: #888; font-weight: bold; }
-.string { color: #800; }
-.char { background: #FEE; color: #800; }
-.date { color: #088; }
-.identifier { color: #888; }
-
-.tag { background: #DDD; }
-.tag .name { font-weight: bold; }
-.tag .preprocessor { color: #088; }
-.tag .meta { color: #880; }
-.tag .attribute { background: #AAA; }
-
-.entity { color: #800; }
-.cdata { font-style: italic; }
-*/
-
-/*** Vibrant Ink ***/
-
-pre {
-    background: black;
-    color: white;
-    font-family: Consolas;
-    font-size: 0.8em;
-}
-
-.keyword { color: #F60; font-weight: bold; }
-.keyword.literal { color: #FC0; }
-.keyword.type { color: #FC0; }
-.preprocessor { color: #996; }
-.comment { color: #93C; }
-.comment .doc { color: #399; font-weight: bold; }
-.identifier { color: white; }
-.string, .char { color: #6F0; }
-.escaped { color: #AAA; }
-.number, .tag { color: #FFEE98; }
-.regex, .attribute { color: #44B4CC; }
-
-.tag .attribute { font-style: italic; }
-pre.xml .preprocessor .keyword { color #996; }
-pre.xml .preprocessor .keyword { color: #996; }
-pre.xml .meta, pre.xml .meta .keyword { color: #399; }
-
-pre.cpp .preprocessor .identifier { color: #996; }
-
-pre::-moz-selection, pre span::-moz-selection {
-    background: yellow;
-    color: black;
-}
-
-pre::selection, pre span::selection {
-    background: yellow;
-    color: black;
-}
-
-<?php if (isset($_GET['debug'])): ?>
-pre span[class]:before, pre span[class]:after {
-    background: #FFC;
-    color: black;
-    font-family: Lucida Grande;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 0.6em;
-}
-pre span[class]:before { content: '‹' attr(class) '›'; }
-pre span[class]:after { content: '‹/' attr(class) '›'; }
-<?php endif; ?>
-    </style>
-</head>
-<body><h1>Hyperlight tests</h1><?php
-
-hyperlight_test('simple.css', 'css');
-hyperlight_test('pizzachili_api.h', 'cpp');
-hyperlight_test('VB');
-hyperlight_test('XML');
-hyperlight_test('style.css', 'css');
-
-?>
-<h2>Test runs</h2>
-<?php
-
-require 'tests.php';
-
-?><pre><?php
-Test::run('PregMerge');
-?></pre>
-</body></html><?php
-
-endif;
 
 ?>

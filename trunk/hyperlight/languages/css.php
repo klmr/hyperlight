@@ -4,7 +4,7 @@ class CssLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'CSS',
-            parent::VERSION => '0.4',
+            parent::VERSION => '0.5',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -21,8 +21,9 @@ class CssLanguage extends HyperLanguage {
         $strmod = implode('', $strmod);
 
         $this->addStates(array(
-            'init' => array('comment', 'uri', 'meta', 'id', 'class', 'pseudoclass', 'element', 'block', 'string'),
+            'init' => array('comment', 'uri', 'meta', 'id', 'class', 'pseudoclass', 'element', 'block', 'constraint', 'string'),
             'block' => array('comment', 'attribute', 'value'),
+            'constraint' => array('identifier', 'string'),
             'value' => array('comment', 'string', 'color', 'number', 'uri', 'identifier', 'important'),
         ));
 
@@ -36,6 +37,7 @@ class CssLanguage extends HyperLanguage {
             'pseudoclass' => "/:$nmstart$nmchar*/",
             'element' => "/$nmstart$nmchar*/i",
             'block' => new Rule('/\{/', '/\}/'),
+            'constraint' => new Rule('/\[/', '/\]/'),
             'number' => '/[+-]?(?:\d+(\.\d+)?|\d*\.\d+)(%|em|ex|px|pt|in|cm|mm|pc|deg|g?rad|m?s|k?Hz)?/',
             'uri' => "/url\(\s*(?:$string|[^\)]*)\s*\)/$strmod",
             'identifier' => "/$nmstart$nmchar*/i",
@@ -50,6 +52,7 @@ class CssLanguage extends HyperLanguage {
             'class' => 'keyword literal',
             'pseudoclass' => 'keyword operator',
             'block' => '',
+            'constraint' => '',
             'value' => '',
             'color' => 'string',
             'uri' => 'char',

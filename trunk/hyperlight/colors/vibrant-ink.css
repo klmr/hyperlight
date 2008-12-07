@@ -1,0 +1,44 @@
+/*
+ * Copyright 2008 Konrad Rudolph
+ * All rights reserved.
+ *
+ * Colour scheme based on the Vibrant Ink scheme by Justin Palmer for the
+ * TextMate text editor.
+ * http://alternateidea.com/blog/articles/2006/1/3/textmate-vibrant-ink-theme-and-prototype-bundle
+ */
+
+pre, code.source-code {
+    background: black;
+    color: white;
+    font-family: Consolas;
+    font-size: 0.8em;
+}
+
+.keyword { color: #F60; font-weight: bold; }
+.keyword.literal { color: #FC0; }
+.keyword.type { color: #FC0; }
+.preprocessor { color: #996; }
+.comment { color: #93C; }
+.comment .doc { color: #399; font-weight: bold; }
+.identifier { color: white; }
+.string, .char { color: #6F0; }
+.escaped { color: #AAA; }
+.number, .tag { color: #FFEE98; }
+.regex, .attribute { color: #44B4CC; }
+
+.tag .attribute { font-style: italic; }
+pre.xml .preprocessor .keyword { color #996; }
+pre.xml .preprocessor .keyword { color: #996; }
+pre.xml .meta, pre.xml .meta .keyword { color: #399; }
+
+pre.cpp .preprocessor .identifier { color: #996; }
+
+pre::-moz-selection, pre span::-moz-selection {
+    background: yellow;
+    color: black;
+}
+
+pre::selection, pre span::selection {
+    background: yellow;
+    color: black;
+}
