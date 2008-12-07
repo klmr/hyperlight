@@ -560,7 +560,7 @@ function hyperlight_test($file, $lang = null) {
         "<h2>Test for language {$pretty_name}</h2>" :
         "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
     echo $title;
-    ?><pre><?php $hl->theResult(); ?></pre><?php
+    ?><pre class="<?php echo strtolower($lang); ?>"><?php $hl->theResult(); ?></pre><?php
 }
 
 ?><!DOCTYPE html>
@@ -569,6 +569,7 @@ function hyperlight_test($file, $lang = null) {
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Hyperlight Syntax Highlighter</title>
     <style type="text/css">
+/*
 .keyword { font-weight: bold; color: #008; }
 .keyword.type { background: #EEF; }
 .keyword.literal { background: #DFD; }
@@ -591,7 +592,47 @@ function hyperlight_test($file, $lang = null) {
 
 .entity { color: #800; }
 .cdata { font-style: italic; }
+*/
 
+/*** Vibrant Ink ***/
+
+pre {
+    background: black;
+    color: white;
+    font-family: Consolas;
+    font-size: 0.8em;
+}
+
+.keyword { color: #F60; font-weight: bold; }
+.keyword.literal { color: #FC0; }
+.keyword.type { color: #FC0; }
+.preprocessor { color: #996; }
+.comment { color: #93C; }
+.comment .doc { color: #399; font-weight: bold; }
+.identifier { color: white; }
+.string, .char { color: #6F0; }
+.escaped { color: #AAA; }
+.number, .tag { color: #FFEE98; }
+.regex, .attribute { color: #44B4CC; }
+
+.tag .attribute { font-style: italic; }
+pre.xml .preprocessor .keyword { color #996; }
+pre.xml .preprocessor .keyword { color: #996; }
+pre.xml .meta, pre.xml .meta .keyword { color: #399; }
+
+pre.cpp .preprocessor .identifier { color: #996; }
+
+pre::-moz-selection, pre span::-moz-selection {
+    background: yellow;
+    color: black;
+}
+
+pre::selection, pre span::selection {
+    background: yellow;
+    color: black;
+}
+
+<?php if (isset($_GET['debug'])): ?>
 pre span[class]:before, pre span[class]:after {
     background: #FFC;
     color: black;
@@ -602,6 +643,7 @@ pre span[class]:before, pre span[class]:after {
 }
 pre span[class]:before { content: '‹' attr(class) '›'; }
 pre span[class]:after { content: '‹/' attr(class) '›'; }
+<?php endif; ?>
     </style>
 </head>
 <body><h1>Hyperlight tests</h1><?php
