@@ -4,7 +4,7 @@ class XmlLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'XML',
-            parent::VERSION => '0.1',
+            parent::VERSION => '0.2',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -13,28 +13,38 @@ class XmlLanguage extends HyperLanguage {
         ));
 
         $inline = array('entity');
-        $common = array('name', 'attribute' => array('double', 'single'));
+        $common = array('tagname', 'attribute', 'value' => array('double', 'single'));
 
         $this->addStates(array(
-            'init' => array_merge(array('tag', 'cdata'), $inline),
+            'init' => array_merge(array('comment', 'cdata', 'tag'), $inline),
             'tag' => array_merge(array('preprocessor', 'meta'), $common),
             'preprocessor' => $common,
             'meta' => $common,
-            'attribute double' => $inline,
-            'attribute single' => $inline,
+            'value double' => $inline,
+            'value single' => $inline,
         ));
         
         $this->addRules(array(
-            'tag' => new Rule('/</', '/>/'),
+            'comment' => '/<!--.*?-->/s',
             'cdata' => '/<!\[CDATA\[.*?\]\]>/',
-            'name' => '/[a-z0-9:-]+/i',
+            'tag' => new Rule('/</', '/>/'),
+            'tagname' => '#(?:(?<=<)|(?<=</)|(?<=<\?)|(?<=<!))[a-z0-9:-]+#i',
+            'attribute' => '/[a-z0-9:-]+/i',
             'preprocessor' => new Rule('/\?/'),
             'meta' => new Rule('/!/'),
-            'attribute' => array(
+            'value' => array(
                 'double' => new Rule('/"/', '/"/'),
                 'single' => new Rule("/'/", "/'/")
             ),
             'entity' => '/&.*?;/',
+        ));
+
+        $this->addMappings(array(
+            'attribute-name' => 'attribute',
+            'value double' => 'string',
+            'value single' => 'string',
+            'entity' => 'escaped',
+            'tagname' => 'keyword'
         ));
     }
 }

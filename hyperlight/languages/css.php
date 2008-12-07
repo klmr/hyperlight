@@ -4,7 +4,7 @@ class CssLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'CSS',
-            parent::VERSION => '0.3',
+            parent::VERSION => '0.4',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -24,7 +24,6 @@ class CssLanguage extends HyperLanguage {
             'init' => array('comment', 'uri', 'meta', 'id', 'class', 'pseudoclass', 'element', 'block', 'string'),
             'block' => array('comment', 'attribute', 'value'),
             'value' => array('comment', 'string', 'color', 'number', 'uri', 'identifier', 'important'),
-            #'block' => array('comment', 'string', 'color', 'number', 'uri', 'identifier'),
         ));
 
         $this->addRules(array(
@@ -53,7 +52,8 @@ class CssLanguage extends HyperLanguage {
             'block' => '',
             'value' => '',
             'color' => 'string',
-            'uri' => 'char'
+            'uri' => 'char',
+            'meta' => 'keyword',
         ));
     }
 }

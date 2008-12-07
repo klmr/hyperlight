@@ -1,5 +1,10 @@
 <?php
 
+// TODO:
+// - Add escaped string characters
+// - Add 'TO DO', 'FIX ME', … tags
+// - (Add doc comments?)
+
 class CppLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
@@ -12,20 +17,23 @@ class CppLanguage extends HyperLanguage {
             )
         ));
 
+        $keyword = array('keyword' => array('', 'type', 'literal', 'operator'));
+        $common = array(
+            'string', 'char', 'number', 'comment',
+            'keyword' => array('', 'type', 'literal', 'operator'),
+            'identifier'
+        );
+
         $this->addStates(array(
-            'init' => array(
-                'preprocessor',
-                'string',
-                'char',
-                'number',
-                'comment',
-                'keyword' => array('', 'type', 'literal', 'operator'),
-                'identifier'
-            ),
+            'init' => array_merge(array('include', 'preprocessor'), $common),
+            'include' => array('incpath'),
+            'preprocessor' => $common,
         ));
 
         $this->addRules(array(
-            'preprocessor' => '/#\w+(?:\\\\\n|[^\\\\])*?\n/s',
+            'include' => new Rule('/#\s*include/', '/\n/'),
+            'preprocessor' => new Rule('/#\s*\w+/', '/(?<!\\\\)\n/'),
+            'incpath' => '/<[^>]*>|"[^"]*"/',
             'string' => Rule::C_DOUBLEQUOTESTRING,
             'char' => Rule::C_SINGLEQUOTESTRING,
             'number' => Rule::C_NUMBER,
@@ -56,6 +64,11 @@ class CppLanguage extends HyperLanguage {
                 ),
             ),
             'identifier' => Rule::C_IDENTIFIER,
+        ));
+
+        $this->addMappings(array(
+            'include' => 'preprocessor',
+            'incpath' => 'tag',
         ));
     }
 }
