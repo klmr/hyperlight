@@ -4,7 +4,7 @@ class CssLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'CSS',
-            parent::VERSION => '0.2',
+            parent::VERSION => '0.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -22,10 +22,14 @@ class CssLanguage extends HyperLanguage {
 
         $this->addStates(array(
             'init' => array('comment', 'uri', 'meta', 'id', 'class', 'pseudoclass', 'element', 'block', 'string'),
-            'block' => array('comment', 'string', 'color', 'number', 'uri', 'identifier'),
+            'block' => array('comment', 'attribute', 'value'),
+            'value' => array('comment', 'string', 'color', 'number', 'uri', 'identifier', 'important'),
+            #'block' => array('comment', 'string', 'color', 'number', 'uri', 'identifier'),
         ));
 
         $this->addRules(array(
+            'attribute' => "/$nmstart$nmchar*/i",
+            'value' => new Rule('/:/', '/;/'),
             'comment' => Rule::C_MULTILINECOMMENT,
             'meta' => "/@$nmstart$nmchar*/i",
             'id' => "/#$nmstart$nmchar*/i",
@@ -38,6 +42,7 @@ class CssLanguage extends HyperLanguage {
             'identifier' => "/$nmstart$nmchar*/i",
             'string' => "/$string/$strmod",
             'color' => "/#$hex{3}(?:$hex{3})?/i",
+            'important' => '/!important/',
         ));
 
         $this->addMappings(array(
@@ -46,6 +51,7 @@ class CssLanguage extends HyperLanguage {
             'class' => 'keyword literal',
             'pseudoclass' => 'keyword operator',
             'block' => '',
+            'value' => '',
             'color' => 'string',
             'uri' => 'char'
         ));
