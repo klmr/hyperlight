@@ -37,7 +37,7 @@ p {
  * http://slinky.imukuppi.org/zenburn/
  */
 
-pre.code {
+pre.source-code {
     background: #3f3f3f;
     border: 1px solid silver;
     color: #dcdccc;
@@ -46,28 +46,28 @@ pre.code {
     padding: 0.2em;
 }
 
-pre.code .comment {
+pre.source-code .comment {
     color: #7f9f7f;
     font-style: italic;
 }
 
-pre.code .varname {
+pre.source-code .tag {
     color: #f0efd0;
 }
 
-pre.code .identifier {
+pre.source-code .identifier {
     color: #efdcbc;
 }
 
-pre.code .keyword {
+pre.source-code .keyword {
     color: #f0dfaf;
     font-weight: bold;
 }
 
-pre.code .keyword.operator {
+pre.source-code .keyword.operator {
     color: #ffcfaf;
 }
 
-pre.code .string {
+pre.source-code .string {
     color: #cc9393;
 }

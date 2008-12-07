@@ -119,13 +119,37 @@ abstract class HyperLanguage {
         $this->_states = self::mergeProperties($this->_states, $states);
     }
 
+    protected function getState($key) {
+        return $this->_states[$key];
+    }
+
+    protected function removeState($key) {
+        unset($this->_states[$key]);
+    }
+
     protected function addRules(array $rules) {
         $this->_rules = self::mergeProperties($this->_rules, $rules);
+    }
+
+    protected function getRule($key) {
+        return $this->_rules[$key];
+    }
+
+    protected function removeRule($key) {
+        unset($this->_rules[$key]);
     }
 
     protected function addMappings(array $mappings) {
         // TODO Implement nested mappings.
         $this->_mappings = array_merge($this->_mappings, $mappings);
+    }
+
+    protected function getMapping($key) {
+        return $this->_mappings[$key];
+    }
+
+    protected function removeMapping($key) {
+        unset($this->_mappings[$key]);
     }
 
     protected function setInfo(array $info) {

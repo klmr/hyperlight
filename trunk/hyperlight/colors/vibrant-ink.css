@@ -17,6 +17,7 @@ pre, code.source-code {
 .keyword { color: #F60; font-weight: bold; }
 .keyword.literal { color: #FC0; }
 .keyword.type { color: #FC0; }
+.keyword.builtin { color: #44B4CC; }
 .preprocessor { color: #996; }
 .comment { color: #93C; }
 .comment .doc { color: #399; font-weight: bold; }
