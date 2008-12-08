@@ -7,6 +7,7 @@
 // - Usual stuff for doc comments
 // - What about html content?
 // - Heredoc et al.
+// - More complex nested variable names.
 
 class PhpLanguage extends HyperLanguage {
     public function __construct() {

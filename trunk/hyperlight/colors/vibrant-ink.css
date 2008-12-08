@@ -7,39 +7,39 @@
  * http://alternateidea.com/blog/articles/2006/1/3/textmate-vibrant-ink-theme-and-prototype-bundle
  */
 
-pre, code.source-code {
+.source-code {
     background: black;
     color: white;
     font-family: Consolas;
     font-size: 0.8em;
 }
 
-.keyword { color: #F60; font-weight: bold; }
-.keyword.literal { color: #FC0; }
-.keyword.type { color: #FC0; }
-.keyword.builtin { color: #44B4CC; }
-.preprocessor { color: #996; }
-.comment { color: #93C; }
-.comment .doc { color: #399; font-weight: bold; }
-.identifier { color: white; }
-.string, .char { color: #6F0; }
-.escaped { color: #AAA; }
-.number, .tag { color: #FFEE98; }
-.regex, .attribute { color: #44B4CC; }
+.source-code .keyword { color: #F60; font-weight: bold; }
+.source-code .keyword.literal { color: #FC0; }
+.source-code .keyword.type { color: #FC0; }
+.source-code .keyword.builtin { color: #44B4CC; }
+.source-code .preprocessor { color: #996; }
+.source-code .comment { color: #93C; }
+.source-code .comment .doc { color: #399; font-weight: bold; }
+.source-code .identifier { color: white; }
+.source-code .string, .source-code .char { color: #6F0; }
+.source-code .escaped { color: #AAA; }
+.source-code .number, .source-code .tag { color: #FFEE98; }
+.source-code .regex, .source-code .attribute { color: #44B4CC; }
 
-.tag .attribute { font-style: italic; }
-pre.xml .preprocessor .keyword { color #996; }
-pre.xml .preprocessor .keyword { color: #996; }
-pre.xml .meta, pre.xml .meta .keyword { color: #399; }
+.source-code .tag .attribute { font-style: italic; }
+.source-code.xml .preprocessor .keyword { color #996; }
+.source-code.xml .preprocessor .keyword { color: #996; }
+.source-code.xml .meta, .source-code.xml .meta .keyword { color: #399; }
 
-pre.cpp .preprocessor .identifier { color: #996; }
+.source-code.cpp .preprocessor .identifier { color: #996; }
 
-pre::-moz-selection, pre span::-moz-selection {
+.source-code::-moz-selection, .source-code span::-moz-selection {
     background: yellow;
     color: black;
 }
 
-pre::selection, pre span::selection {
+.source-code::selection, .source-code span::selection {
     background: yellow;
     color: black;
 }
