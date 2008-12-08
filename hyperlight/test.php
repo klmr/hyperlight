@@ -17,7 +17,7 @@ function hyperlight_test($file, $lang = null) {
         "<h2>Test for language {$pretty_name}</h2>" :
         "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
     echo "$title\n";
-    ?><pre class="<?php echo strtolower($lang); ?>"><?php $hl->theResult(); ?></pre><?php
+    ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->theResult(); ?></pre><?php
 }
 
 ?><!DOCTYPE html>

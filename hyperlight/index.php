@@ -1,25 +1,24 @@
-<?php
-
-require 'hyperlight.php';
-
-?><!DOCTYPE html 
+<?php require 'hyperlight.php'; ?>
+<!DOCTYPE html 
      PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>Hyperlight – Code Highlighting for PHP</title>
+        <title>‹? Hyperlight ?› Code Highlighting for PHP</title>
         <link rel="stylesheet" type="text/css" href="style.css"/>
+        <link rel="stylesheet" type="text/css" href="colors/zenburn.css" id="theme"/>
     </head>
 
     <body>
         <div id="head">
             <div class="text">
-                <h1>Hyperlight –<br/>Code Highlighting for PHP</h1>
+                <h1>Code Highlighting for PHP</h1>
             </div>
         </div>
         <div id="content">
+            <div id="swoosh"></div>
             <div class="text">
                 <h2>Why use Hyperlight?</h2>
                 <ul>
@@ -66,3 +65,5 @@ $highlighter->theResult();', 'iphp'); ?>
         </div>
     </body>
 </html>
+<!-- vim:ft=html
+-->

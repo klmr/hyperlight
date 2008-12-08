@@ -1,0 +1,36 @@
+/*
+ * Color scheme for code is a simplified version of the VIM Zenburn scheme:
+ * http://slinky.imukuppi.org/zenburn/
+ */
+
+.source-code {
+    background: #3f3f3f;
+    color: #dcdccc;
+}
+
+.source-code .comment {
+    color: #7f9f7f;
+    font-style: italic;
+}
+
+.source-code .tag {
+    color: #f0efd0;
+}
+
+.source-code .identifier {
+    color: #efdcbc;
+}
+
+.source-code .keyword {
+    color: #f0dfaf;
+    font-weight: bold;
+}
+
+.source-code .keyword.operator {
+    color: #ffcfaf;
+}
+
+.source-code .string {
+    color: #cc9393;
+}
+
