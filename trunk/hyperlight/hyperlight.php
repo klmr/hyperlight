@@ -505,7 +505,8 @@ class Hyperlight {
     }
 
     private function emit($token, $class = null) {
-        $token = self::htmlentities($token);
+        #$token = self::htmlentities($token);
+        $token = htmlspecialchars($token, ENT_NOQUOTES);
         if ($class === null)
             $this->write($token);
         else {
@@ -515,7 +516,8 @@ class Hyperlight {
     }
 
     private function emitPartial($token, $class) {
-        $token = self::htmlentities($token);
+        #$token = self::htmlentities($token);
+        $token = htmlspecialchars($token, ENT_NOQUOTES);
         $class = $this->_lang->className($class);
         if ($class === '') {
             $this->write($token);
@@ -528,7 +530,8 @@ class Hyperlight {
     }
 
     private function emitPop($token = '') {
-        $token = self::htmlentities($token);
+        #$token = self::htmlentities($token);
+        $token = htmlspecialchars($token, ENT_NOQUOTES);
         if (array_pop($this->_omitSpans))
             $this->write($token);
         else
@@ -539,6 +542,9 @@ class Hyperlight {
         $this->_result .= $text;
     }
 
+    /*
+     * DAMN! What did I need them for? Something to do with encoding …
+     * but why not use the `$charset` argument on `htmlspecialchars`?
     private static function htmlentitiesCallback($match) {
         switch ($match[0]) {
             case '<': return '&lt;';
@@ -548,10 +554,12 @@ class Hyperlight {
     }
 
     private static function htmlentities($text) {
+        return htmlspecialchars($text, ENT_NOQUOTES);
         return preg_replace_callback(
             '/[<>&]/', array('Hyperlight', 'htmlentitiesCallback'), $text
         );
     }
+    */
 }
 
 /**
@@ -559,12 +567,32 @@ class Hyperlight {
  *
  * @param string $code The code.
  * @param string $lang The language of the code.
- * @param string $tag The surrounding tag to use.
+ * @param string $tag The surrounding tag to use. Optional.
+ * @param array $attributes Attributes to decorate {@link $tag} with.
+ *          If no tag is given, this argument can be passed in its place. This
+ *          behaviour will be assumed if the third argument is an array.
+ *          Attributes must be given as a hash of key value pairs.
  */
-function hyperlight($code, $lang, $tag = "pre") {
+function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
+    if (is_array($tag) and !empty($attributes))
+        die("Can't pass array arguments for \$tag *and* \$attributes to `hyperlight`!");
+    if ($tag === '')
+        $tag = 'pre';
     $lang = strtolower($lang);
+    $class = "source-code $lang";
+
+    $attr = array();
+    foreach ($attributes as $key => $value)
+        if ($key == 'class')
+            $class .= ' ' . htmlspecialchars($value);
+        else
+            $attr[] = htmlspecialchars($key) . '="' .
+                      htmlspecialchars($value) . '"';
+
+    $attr = empty($attr) ? '' : ' ' . implode(' ', $attr);
+
     $hl = new Hyperlight($code, $lang);
-    echo "<$tag class=\"source-code $lang\">";
+    echo "<$tag class=\"source-code $lang\"$attr>";
     $hl->theResult();
     echo "</$tag>";
 }
