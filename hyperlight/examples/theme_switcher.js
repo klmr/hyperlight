@@ -1,6 +1,8 @@
 $(document).ready(function() {
     $('#switch-buttons a').each(function (i, btt) {
         $(btt).click(function () {
+            if ($(this).hasClass('active'))
+                return false;
             $('#switch-buttons a').each(function (i, btt) { $(btt).removeClass('active'); });
             var cssPath = '../colors/' + this.id.replace('theme-', '') + '.css';
             var cssAlreadyLoaded = false;

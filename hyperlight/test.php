@@ -61,6 +61,7 @@ Hello, world!</pre>
 <?php
 
 hyperlight_test('simple.css', 'css');
+hyperlight_test('../' . basename(__FILE__), 'php');
 hyperlight_test('preg_helper.php', 'php');
 hyperlight_test('pizzachili_api.h', 'cpp');
 hyperlight_test('VB');
@@ -76,8 +77,4 @@ require 'tests.php';
 ?><pre><?php
 Test::run('PregMerge');
 ?></pre>
-</body></html><?php
-
-endif;
-
-?>
+</body></html><?php endif; ?>
