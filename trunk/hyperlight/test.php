@@ -3,6 +3,7 @@
 require 'hyperlight.php';
 
 $colorscheme = 'vibrant-ink';
+#$colorscheme = 'zenburn';
 
 if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
 
@@ -11,13 +12,13 @@ function hyperlight_test($file, $lang = null) {
         $lang = $file;
     $fname = 'tests/' . strtolower($file);
     $code = file_get_contents($fname);
-    $hl = new Hyperlight($code, $lang);
+    $hl = new Hyperlight($lang);
     $pretty_name = $hl->language()->name();
     $title = $file === $lang ?
         "<h2>Test for language {$pretty_name}</h2>" :
         "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
     echo "$title\n";
-    ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->theResult(); ?></pre><?php
+    ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->renderAndPrint($code); ?></pre><?php
 }
 
 ?><!DOCTYPE html>
@@ -48,11 +49,9 @@ function hyperlight_test($file, $lang = null) {
 
     <p>Look, ma: Inline code. Start off by writing <?php hyperlight('#include <iostream>', 'cpp', 'code'); ?> at the beginning of your newly-created <code>main.cpp</code> file.
     Then you can insert the following code below:</p>
-    <?php hyperlight('
-int main() {
+    <?php hyperlight('int main() {
     std::cout << "Hello, world!" << std::endl;
-}
-', 'cpp'); ?>
+}', 'cpp'); ?>
     <p>Next, let's compile this code and execute it. This is done easily on the console:</p>
     <pre>$ g++ -Wall -pedantic -o main main.cpp
 $ ./main

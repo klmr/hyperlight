@@ -10,8 +10,6 @@
 .source-code {
     background: black;
     color: white;
-    font-family: Consolas;
-    font-size: 0.8em;
 }
 
 .source-code .keyword { color: #F60; font-weight: bold; }
