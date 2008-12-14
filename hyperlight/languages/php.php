@@ -2,6 +2,7 @@
 
 // TODO
 // - Fill the scaffold below!
+// - Comments via #
 // - More keywords? What about functions?
 // - String interpolation and escaping.
 // - Usual stuff for doc comments
@@ -38,7 +39,7 @@ class PhpLanguage extends HyperLanguage {
 
         $this->addRules(array(
             'php' => new Rule('/<\?php/', '/\?>/'),
-            $html => new Rule('/./', '/(?=<\?php)/'),
+            $html => new Rule('/(?=.)/', '/(?=<\?php)/'),
             //$html => new Rule('/./'),
             'comment' => Rule::C_COMMENT,
             'string' => Rule::C_DOUBLEQUOTESTRING,
@@ -58,7 +59,7 @@ class PhpLanguage extends HyperLanguage {
         $this->addMappings(array(
             'char' => 'string',
             'variable' => 'tag',
-            'html' => 'string',
+            'html' => 'preprocessor',
         ));
     }
 }

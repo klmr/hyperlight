@@ -2,6 +2,13 @@
 
 require_once 'preg_helper.php';
 
+if (!function_exists('array_peek')) {
+    function array_peek(array &$array) {
+        $cnt = count($array);
+        return $cnt === 0 ? null : $array[$cnt - 1];
+    }
+}
+
 /**
  * @internal
  * For internal debugging purposes.
@@ -304,8 +311,8 @@ class HyperlightCompiledLanguage {
         $this->_rules = $this->compileRules($rules);
         $this->_mappings = $mappings;
 
-        foreach ($postProcessors as $key => $pp)
-            $this->_postProcessors[$key] = HyperLanguage::compile($pp);
+        foreach ($postProcessors as $ppkey => $ppvalue)
+            $this->_postProcessors[$ppkey] = HyperLanguage::compile($ppvalue);
     }
 
     public function name() {
@@ -374,12 +381,8 @@ class HyperlightCompiledLanguage {
         }
     }
 
-    public function hasPostProcessor($state) {
-        return array_key_exists($state, $this->_postProcessors);
-    }
-
-    public function postProcessor($state) {
-        return $this->_postProcessors[$state];
+    public function postProcessors() {
+        return $this->_postProcessors;
     }
 
     private function compileStates($states) {
@@ -486,15 +489,13 @@ class HyperlightCompiledLanguage {
 }
 
 class Hyperlight {
-    private $_code;
     private $_lang;
     private $_result;
+    private $_states;
     private $_omitSpans;
+    private $_postProcessors = array();
 
-    public function __construct($code, $lang) {
-        // Normalize line breaks.
-        $this->_code = preg_replace('/\r\n?/', "\n", $code);
-
+    public function __construct($lang) {
         if (is_string($lang))
             $this->_lang = HyperLanguage::compileFromName(strtolower($lang));
         else if ($lang instanceof HyperlightCompiledLanguage)
@@ -502,125 +503,151 @@ class Hyperlight {
         else if ($lang instanceof HyperLanguage)
             $this->_lang = HyperLanguage::compile($lang);
         else
-            trigger_error('Invalid argument type for $lang to Hyperlight::__construct', E_USER_ERROR);
+            trigger_error(
+                'Invalid argument type for $lang to Hyperlight::__construct',
+                E_USER_ERROR
+            );
+
+        foreach ($this->_lang->postProcessors() as $ppkey => $ppvalue)
+            $this->_postProcessors[$ppkey] = new Hyperlight($ppvalue);
+
+        $this->reset();
     }
 
     public function language() {
         return $this->_lang;
     }
 
-    public function result() {
-        if ($this->_result === null)
-            $this->renderCode();
-
-        return $this->_result;
+    public function reset() {
+        $this->_states = array('init');
+        $this->_omitSpans = array();
     }
 
-    public function theResult() {
-        echo $this->result();
+    public function render($code) {
+        // Normalize line breaks.
+        $this->_code = preg_replace('/\r\n?/', "\n", $code);
+        return $this->renderCode();
     }
+
+    public function renderAndPrint($code) {
+        echo $this->render($code);
+    }
+
 
     private function renderCode() {
-        $this->_omitSpans = array();
         $code = $this->_code;
         $pos = 0;
         $len = strlen($code);
         $this->_result = '';
-        $state = 'init';
-        $states = array($state);    // Stack of active states.
+        $state = array_peek($this->_states);
 
-        $prev_pos = -1;             // Emergency break to catch faulty rules.
+        // If there are open states (reentrant parsing), open the corresponding
+        // tags first:
+
+        for ($i = 1; $i < count($this->_states); ++$i)
+            if (!$this->_omitSpans[$i - 1])
+                $this->write("<span class=\"$this->_states[$i]\">");
+
+        // Emergency break to catch faulty rules.
+        $prev_pos = -1;
 
         while ($pos < $len) {
             // The token next to the current position, after the inner loop completes.
+            // i.e. $closest_hit = array($matched_text, $position)
             $closest_hit = array('', $len);
             // The rule that found this token.
             $closest_rule = null;
             $rules = $this->_lang->rule($state);
 
             foreach ($rules as $name => $rule) {
-                if ($rule instanceof Rule) {
-                    $this->matchCloser($rule->start(), $name, $pos, $closest_hit, $closest_rule);
-                }
-                else {
-                    if (preg_match($rule, $code, $matches, PREG_OFFSET_CAPTURE, $pos) == 1) {
-                        // Search which of the sub-patterns matched.
+                if ($rule instanceof Rule)
+                    $this->matchIfCloser(
+                        $rule->start(), $name, $pos, $closest_hit, $closest_rule
+                    );
+                else if (preg_match($rule, $code, $matches, PREG_OFFSET_CAPTURE, $pos) == 1) {
+                    // Search which of the sub-patterns matched.
 
-                        foreach ($matches as $group => $match) {
-                            if (!is_string($group))
-                                continue;
-                            if ($match[1] !== -1) {
-                                $closest_hit = $match;
-                                $closest_rule = str_replace('_', ' ', $group);
-                                break;
-                            }
+                    foreach ($matches as $group => $match) {
+                        if (!is_string($group))
+                            continue;
+                        if ($match[1] !== -1) {
+                            $closest_hit = $match;
+                            $closest_rule = str_replace('_', ' ', $group);
+                            break;
                         }
                     }
                 }
-            }
+            } // foreach ($rules)
 
-            // If we're currently inside a rule …
+            // If we're currently inside a rule, check whether we've come to the
+            // end of it, or the end of any other rule we're nested in.
 
-            if (count($states) > 1) {
-                $n = count($states) - 1;
+            if (count($this->_states) > 1) {
+                $n = count($this->_states) - 1;
                 do {
-                    $rule = $this->_lang->rule($states[$n - 1]);
-                    $rule = $rule[$states[$n]];
+                    $rule = $this->_lang->rule($this->_states[$n - 1]);
+                    $rule = $rule[$this->_states[$n]];
                     --$n;
                     if ($n < 0)
-                        throw new NoMatchingRuleException($states, $pos, $this->code);
+                        throw new NoMatchingRuleException($this->_states, $pos, $code);
                 } while ($rule->end() === null);
 
-                $this->matchCloser($rule->end(), $n + 1, $pos, $closest_hit, $closest_rule);
+                $this->matchIfCloser($rule->end(), $n + 1, $pos, $closest_hit, $closest_rule);
             }
 
             // We take the closest hit:
 
             if ($closest_hit[1] > $pos)
-                $this->emit(substr($code, $pos, $closest_hit[1] - $pos));
+                $this->emit(substr($code, $pos, $closest_hit[1] - $pos), array_peek($this->_states));
 
             $prev_pos = $pos;
             $pos = $closest_hit[1] + strlen($closest_hit[0]);
 
             if ($prev_pos === $pos and is_string($closest_rule))
-                throw new NoMatchingRuleException($states, $pos, $code);
+                if (array_key_exists($closest_rule, $this->_lang->rule($state))) {
+                    array_push($this->_states, $closest_rule);
+                    $state = $closest_rule;
+                    $this->emitPartial('', $closest_rule);
+                }
 
             if ($closest_hit[1] === $len)
                 break;
             else if (!is_string($closest_rule)) {
                 // Pop state.
-                if (count($states) <= $closest_rule)
-                    throw new NoMatchingRuleException($states, $pos, $code);
+                if (count($this->_states) <= $closest_rule)
+                    throw new NoMatchingRuleException($this->_states, $pos, $code);
 
-                while (count($states) > $closest_rule + 1) {
-                    array_pop($states);
-                    $this->emitPop();
+                while (count($this->_states) > $closest_rule + 1) {
+                    $lastState = array_pop($this->_states);
+                    $this->emitPop('', $lastState);
                 }
-                array_pop($states);
-                $state = $states[count($states) - 1];
-                $this->emitPop($closest_hit[0]);
+                $lastState = array_pop($this->_states);
+                $state = array_peek($this->_states);
+                $this->emitPop($closest_hit[0], $lastState);
             }
             else if (array_key_exists($closest_rule, $this->_lang->rule($state))) {
                 // Push state.
-                array_push($states, $closest_rule);
+                array_push($this->_states, $closest_rule);
                 $state = $closest_rule;
                 $this->emitPartial($closest_hit[0], $closest_rule);
             }
-            else {
+            else
                 $this->emit($closest_hit[0], $closest_rule);
-            }
-        }
+        } // while ($pos < $len)
 
         // Close any tags that are still open (can happen in incomplete code
         // fragments that don't necessarily signify an error (consider PHP
         // embedded in HTML, or a C++ preprocessor code not ending on newline).
         
-        while (array_pop($states) !== 'init') {
+        $omitSpansBackup = $this->_omitSpans;
+        for ($i = count($this->_states); $i > 1; --$i)
             $this->emitPop();
-        }
+        $this->_omitSpans = $omitSpansBackup;
+
+        return $this->_result;
     }
 
-    private function matchCloser($expr, $next, $pos, &$closest_hit, &$closest_rule) {
+    private function matchIfCloser($expr, $next, $pos, &$closest_hit, &$closest_rule) {
         $matches = array();
         if (preg_match($expr, $this->_code, $matches, PREG_OFFSET_CAPTURE, $pos) == 1) {
             if (
@@ -638,16 +665,14 @@ class Hyperlight {
     }
 
     private function processToken($token, $class = '') {
-        if ($this->_lang->hasPostProcessor($class)) {
-            $hl = new Hyperlight($token, $this->_lang->postProcessor($class));
-            return $hl->result();
-        }
+        if (array_key_exists($class, $this->_postProcessors))
+            return $this->_postProcessors[$class]->render($token);
         else
+            #return self::htmlentities($token);
             return htmlspecialchars($token, ENT_NOQUOTES);
     }
 
     private function emit($token, $class = null) {
-        #$token = self::htmlentities($token);
         $token = $this->processToken($token, $class);
         if ($class === null)
             $this->write($token);
@@ -658,7 +683,6 @@ class Hyperlight {
     }
 
     private function emitPartial($token, $class) {
-        #$token = self::htmlentities($token);
         $token = $this->processToken($token, $class);
         $class = $this->_lang->className($class);
         if ($class === '') {
@@ -671,9 +695,8 @@ class Hyperlight {
         }
     }
 
-    private function emitPop($token = '') {
-        #$token = self::htmlentities($token);
-        $token = $this->processToken($token, '');
+    private function emitPop($token = '', $class = '') {
+        $token = $this->processToken($token, $class);
         if (array_pop($this->_omitSpans))
             $this->write($token);
         else
@@ -684,25 +707,23 @@ class Hyperlight {
         $this->_result .= $text;
     }
 
-    /*
-     * DAMN! What did I need them for? Something to do with encoding …
-     * but why not use the `$charset` argument on `htmlspecialchars`?
-    private static function htmlentitiesCallback($match) {
-        switch ($match[0]) {
-            case '<': return '&lt;';
-            case '>': return '&gt;';
-            case '&': return '&amp;';
-        }
-    }
-
-    private static function htmlentities($text) {
-        return htmlspecialchars($text, ENT_NOQUOTES);
-        return preg_replace_callback(
-            '/[<>&]/', array('Hyperlight', 'htmlentitiesCallback'), $text
-        );
-    }
-    */
-}
+//      // DAMN! What did I need them for? Something to do with encoding …
+//      // but why not use the `$charset` argument on `htmlspecialchars`?
+//    private static function htmlentitiesCallback($match) {
+//        switch ($match[0]) {
+//            case '<': return '&lt;';
+//            case '>': return '&gt;';
+//            case '&': return '&amp;';
+//        }
+//    }
+//
+//    private static function htmlentities($text) {
+//        return htmlspecialchars($text, ENT_NOQUOTES);
+//        return preg_replace_callback(
+//            '/[<>&]/', array('Hyperlight', 'htmlentitiesCallback'), $text
+//        );
+//    }
+} // class Hyperlight
 
 /**
  * <var>echo</var>s a highlighted code.
@@ -733,9 +754,9 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
 
     $attr = empty($attr) ? '' : ' ' . implode(' ', $attr);
 
-    $hl = new Hyperlight($code, $lang);
+    $hl = new Hyperlight($lang);
     echo "<$tag class=\"source-code $lang\"$attr>";
-    $hl->theResult();
+    $hl->renderAndPrint(trim($code));
     echo "</$tag>";
 }
 
