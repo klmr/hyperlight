@@ -36,22 +36,22 @@
                 <p>To use Hyperlight, all you have to do is to include the main file into your <acronym>PHP</acronym> source code and invoke the highlighting function. To highlight a source code, this is all you need to do:</p>
                 <?php hyperlight('hyperlight($code, $language);', 'iphp'); ?>
                 <p>To put this in some more context, imagine that you want to highlight the current file. Our program might not be self-replicating or self-modifying but it sure is self-embellishing.</p>
-                <?php hyperlight('
-<?php require \'path/to/hyperlight.php\'; ?>
-<html>
-    <head>
-        <title>Very simple test for Hyperlight</title>
-        <link rel="stylesheet" type="text/css" href="colors/zenburn.css">
-    </head>
-    <body>
-        <?php hyperlight(file_get_contents(__FILE__), \'php\'); ?>
-    </body>
-</html>', 'php'); ?>
+                <?php hyperlight_file('code1.php', 'php'); ?>
                 <p>It really can’t get much simpler than that.</p>
                 <p>Notice that we didn’t have to put special <acronym>HTML</acronym> tags around our code. <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> does this for us. But don’t worry about lack of control. This function has two more optional arguments that you can use to control how these surrounding tags should look like. The first controls which surrounding tag to use and defaults to – what a surprise – <?php hyperlight('<pre>', 'xml', 'code'); ?>. The second argument controls the attributes that the tag should have (in addition to the <code>class</code>). For a detailed description of how to use these arguments, read the reference entry on the <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> function.</p>
+
                 <div class="notice">
                     <p>Regardless of the fourth argument, the <code>class</code> attribute is <strong>always</strong> present and can’t be removed – and shouldn’t be: it’s necessary for the <acronym>CSS</acronym> themes to work.</p>
                 </div>
+
+                <p><acronym>PHP</acronym> is something of a special case; it requires a <code>&lt;?php</code> to start a <acronym>PHP</acronym> block. However, when posting code, this is often omitted because only a short snippet is posted. That’s fine. Hyperlight offers a special language tag for this rather unique case: <code>iphp</code>.</p>
+                <?php hyperlight('hyperlight($code, \'iphp\');', 'iphp'); ?>
+                <p>Another special case occurs when we want to highlight a file. Hyperlight provides a shortcut to do this: <a href="../ref/#hyperlight_file-function"><code>hyperlight_file</code></a>.</p>
+                <p>Now, that’s all there really is to it. Told you it was easy. ;-) But trust me, it gets more … <em>interesting</em> once we want to create our own themes or language definitions.</p>
+
+                <a id="creating-themes"></a><h3>Creating Themes</h3>
+                <p>The whole visual appearance of the highlighted code in Hyperlight is based on a few simple <acronym>CSS</acronym> rules. The strength of Hyperlight lies in the fact that these rules are controlled by class names that are the same across all language definitions, thereby making it easy to adapt one theme for all languages.</p>
+                <p>At the same time, a finer degree of control might be needed because one size doesn’t fit all. This is possible in three ways. First, language definitions can define <em>mappings</em> between different class names. Secondly, rules can be combined and nested. Lastly, if all else fails, code is also tagged with a language-specific class name. This can be used to establish a specific rule for one language only. Of course, these should be used sparingly because they make it much harder to develop colour themes that are usable across all language definitions. We will examine all these techniques in due course.</p>
             </div>
         </div>
     </body>
