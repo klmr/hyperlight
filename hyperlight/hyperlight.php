@@ -1,6 +1,6 @@
 <?php
 
-require 'preg_helper.php';
+require_once 'preg_helper.php';
 
 /**
  * @internal
@@ -90,6 +90,10 @@ abstract class HyperLanguage {
     private $_mappings = array();
     private $_info = array();
     private $_caseInsensitive = false;
+    private $_postProcessors = array();
+
+    private static $_languageCache = array();
+    private static $_compiledLanguageCache = array();
 
     /**
      * Indices for information.
@@ -101,14 +105,29 @@ abstract class HyperLanguage {
     const WEBSITE = 5;
     const EMAIL = 6;
 
-    public function compile() {
-        return new HyperlightCompiledLanguage(
-            $this->_info,
-            $this->_states,
-            $this->_rules,
-            $this->_mappings,
-            $this->_caseInsensitive
-        );
+    public static function compile(HyperLanguage $lang) {
+        $id = $lang->id();
+        if (!isset(self::$_compiledLanguageCache[$id]))
+            self::$_compiledLanguageCache[$id] = $lang->makeCompiledLanguage();
+        return self::$_compiledLanguageCache[$id];
+    }
+
+    public static function compileFromName($lang) {
+        return self::compile(self::fromName($lang));
+    }
+
+    protected static function fromName($lang) {
+        if (!isset(self::$_languageCache[$lang])) {
+            require_once "languages/$lang.php";
+            $klass = ucfirst("{$lang}Language");
+            self::$_languageCache[$lang] = new $klass();
+        }
+        return self::$_languageCache[$lang];
+    }
+
+    public function id() {
+        $klass = get_class($this);
+        return strtolower(substr($klass, 0, strlen($klass) - strlen('Language')));
     }
 
     protected function setCaseInsensitive($value) {
@@ -156,87 +175,102 @@ abstract class HyperLanguage {
         $this->_info = $info;
     }
 
-    protected function addNestedLanguage(HyperLanguage $language, $hoistBackRules) {
-        $prefix = get_class($language);
-        if (!is_array($hoistBackRules))
-            $hoistBackRules = array($hoistBackRules);
+    protected function addPostprocessing($rule, HyperLanguage $language) {
+        $this->_postProcessors[$rule] = $language;
+    }
 
-        $states = array();  // Step 1: states
+//    protected function addNestedLanguage(HyperLanguage $language, $hoistBackRules) {
+//        $prefix = get_class($language);
+//        if (!is_array($hoistBackRules))
+//            $hoistBackRules = array($hoistBackRules);
+//
+//        $states = array();  // Step 1: states
+//
+//        foreach ($language->_states as $stateName => $state) {
+//            $prefixedRules = array();
+//
+//            if (strstr($stateName, ' ')) {
+//                $parts = explode(' ', $stateName);
+//                $prefixed = array();
+//                foreach ($parts as $part)
+//                    $prefixed[] = "$prefix$part";
+//                $stateName = implode(' ', $prefixed);
+//            }
+//            else
+//                $stateName = "$prefix$stateName";
+//
+//            foreach ($state as $key => $rule) {
+//                if (is_string($key) and is_array($rule)) {
+//                    $nestedRules = array();
+//                    foreach ($rule as $nestedRule)
+//                        $nestedRules[] = ($nestedRule === '') ? '' :
+//                                         "$prefix$nestedRule";
+//
+//                    $prefixedRules["$prefix$key"] = $nestedRules;
+//                }
+//                else
+//                    $prefixedRules[] = "$prefix$rule";
+//            }
+//
+//            if ($stateName === 'init')
+//                $prefixedRules = array_merge($hoistBackRules, $prefixedRules);
+//
+//            $states[$stateName] = $prefixedRules;
+//        }
+//
+//        $rules = array();   // Step 2: rules
+//        // Mappings need to set up already!
+//        $mappings = array();
+//
+//        foreach ($language->_rules as $ruleName => $rule) {
+//            if (is_array($rule)) {
+//                $nestedRules = array();
+//                foreach ($rule as $nestedName => $nestedRule) {
+//                    if (is_string($nestedName)) {
+//                        $nestedRules["$prefix$nestedName"] = $nestedRule;
+//                        $mappings["$prefix$nestedName"] = $nestedName;
+//                    }
+//                    else
+//                        $nestedRules[] = $nestedRule;
+//                }
+//                $rules["$prefix$ruleName"] = $nestedRules;
+//            }
+//            else {
+//                $rules["$prefix$ruleName"] = $rule;
+//                $mappings["$prefix$ruleName"] = $ruleName;
+//            }
+//        }
+//
+//        // Step 3: mappings.
+//
+//        foreach ($language->_mappings as $ruleName => $cssClass) {
+//            if (strstr($ruleName, ' ')) {
+//                $parts = explode(' ', $ruleName);
+//                $prefixed = array();
+//                foreach ($parts as $part)
+//                    $prefixed[] = "$prefix$part";
+//                $mappings[implode(' ', $prefixed)] = $cssClass;
+//            }
+//            else
+//                $mappings["$prefix$ruleName"] = $cssClass;
+//        }
+//
+//        $this->addStates($states);
+//        $this->addRules($rules);
+//        $this->addMappings($mappings);
+//
+//        return $prefix . 'init';
+//    }
 
-        foreach ($language->_states as $stateName => $state) {
-            $prefixedRules = array();
-
-            if (strstr($stateName, ' ')) {
-                $parts = explode(' ', $stateName);
-                $prefixed = array();
-                foreach ($parts as $part)
-                    $prefixed[] = "$prefix$part";
-                $stateName = implode(' ', $prefixed);
-            }
-            else
-                $stateName = "$prefix$stateName";
-
-            foreach ($state as $key => $rule) {
-                if (is_string($key) and is_array($rule)) {
-                    $nestedRules = array();
-                    foreach ($rule as $nestedRule)
-                        $nestedRules[] = ($nestedRule === '') ? '' :
-                                         "$prefix$nestedRule";
-
-                    $prefixedRules["$prefix$key"] = $nestedRules;
-                }
-                else
-                    $prefixedRules[] = "$prefix$rule";
-            }
-
-            if ($stateName === 'init')
-                $prefixedRules = array_merge($prefixedRules, $hoistBackRules);
-
-            $states[$stateName] = $prefixedRules;
-        }
-
-        $rules = array();   // Step 2: rules
-        // Mappings need to set up already!
-        $mappings = array();
-
-        foreach ($language->_rules as $ruleName => $rule) {
-            if (is_array($rule)) {
-                $nestedRules = array();
-                foreach ($rule as $nestedName => $nestedRule) {
-                    if (is_string($nestedName)) {
-                        $nestedRules["$prefix$nestedName"] = $nestedRule;
-                        $mappings["$prefix$nestedName"] = $nestedName;
-                    }
-                    else
-                        $nestedRules[] = $nestedRule;
-                }
-                $rules["$prefix$ruleName"] = $nestedRules;
-            }
-            else {
-                $rules["$prefix$ruleName"] = $rule;
-                $mappings["$prefix$ruleName"] = $ruleName;
-            }
-        }
-
-        // Step 3: mappings.
-
-        foreach ($language->_mappings as $ruleName => $cssClass) {
-            if (strstr($ruleName, ' ')) {
-                $parts = explode(' ', $ruleName);
-                $prefixed = array();
-                foreach ($parts as $part)
-                    $prefixed[] = "$prefix$part";
-                $mappings[implode(' ', $prefixed)] = $cssClass;
-            }
-            else
-                $mappings["$prefix$ruleName"] = $cssClass;
-        }
-
-        $this->addStates($states);
-        $this->addRules($rules);
-        $this->addMappings($mappings);
-
-        return $prefix . 'init';
+    private function makeCompiledLanguage() {
+        return new HyperlightCompiledLanguage(
+            $this->_info,
+            $this->_states,
+            $this->_rules,
+            $this->_mappings,
+            $this->_caseInsensitive,
+            $this->_postProcessors
+        );
     }
 
     private static function mergeProperties(array $old, array $new) {
@@ -261,13 +295,17 @@ class HyperlightCompiledLanguage {
     private $_rules;
     private $_mappings;
     private $_caseInsensitive;
+    private $_postProcessors = array();
 
-    public function __construct($info, $states, $rules, $mappings, $caseInsensitive) {
+    public function __construct($info, $states, $rules, $mappings, $caseInsensitive, $postProcessors) {
         $this->_info = $info;
         $this->_caseInsensitive = $caseInsensitive;
         $this->_states = $this->compileStates($states);
         $this->_rules = $this->compileRules($rules);
         $this->_mappings = $mappings;
+
+        foreach ($postProcessors as $key => $pp)
+            $this->_postProcessors[$key] = HyperLanguage::compile($pp);
     }
 
     public function name() {
@@ -334,6 +372,14 @@ class HyperlightCompiledLanguage {
 
             return implode(' ', $ret);
         }
+    }
+
+    public function hasPostProcessor($state) {
+        return array_key_exists($state, $this->_postProcessors);
+    }
+
+    public function postProcessor($state) {
+        return $this->_postProcessors[$state];
     }
 
     private function compileStates($states) {
@@ -445,12 +491,18 @@ class Hyperlight {
     private $_result;
     private $_omitSpans;
 
-    private static $_languageCache = array();
-
     public function __construct($code, $lang) {
         // Normalize line breaks.
         $this->_code = preg_replace('/\r\n?/', "\n", $code);
-        $this->_lang = $this->languageDefinition(strtolower($lang));
+
+        if (is_string($lang))
+            $this->_lang = HyperLanguage::compileFromName(strtolower($lang));
+        else if ($lang instanceof HyperlightCompiledLanguage)
+            $this->_lang = $lang;
+        else if ($lang instanceof HyperLanguage)
+            $this->_lang = HyperLanguage::compile($lang);
+        else
+            trigger_error('Invalid argument type for $lang to Hyperlight::__construct', E_USER_ERROR);
     }
 
     public function language() {
@@ -466,16 +518,6 @@ class Hyperlight {
 
     public function theResult() {
         echo $this->result();
-    }
-
-    private function languageDefinition($lang) {
-        if (!isset(self::$_languageCache[$lang])) {
-            require_once "languages/$lang.php";
-            $klass = ucfirst("{$lang}Language");
-            $language = new $klass();
-            self::$_languageCache[$lang] = $language->compile();
-        }
-        return self::$_languageCache[$lang];
     }
 
     private function renderCode() {
@@ -568,6 +610,14 @@ class Hyperlight {
                 $this->emit($closest_hit[0], $closest_rule);
             }
         }
+
+        // Close any tags that are still open (can happen in incomplete code
+        // fragments that don't necessarily signify an error (consider PHP
+        // embedded in HTML, or a C++ preprocessor code not ending on newline).
+        
+        while (array_pop($states) !== 'init') {
+            $this->emitPop();
+        }
     }
 
     private function matchCloser($expr, $next, $pos, &$closest_hit, &$closest_rule) {
@@ -587,9 +637,18 @@ class Hyperlight {
         }
     }
 
+    private function processToken($token, $class = '') {
+        if ($this->_lang->hasPostProcessor($class)) {
+            $hl = new Hyperlight($token, $this->_lang->postProcessor($class));
+            return $hl->result();
+        }
+        else
+            return htmlspecialchars($token, ENT_NOQUOTES);
+    }
+
     private function emit($token, $class = null) {
         #$token = self::htmlentities($token);
-        $token = htmlspecialchars($token, ENT_NOQUOTES);
+        $token = $this->processToken($token, $class);
         if ($class === null)
             $this->write($token);
         else {
@@ -600,7 +659,7 @@ class Hyperlight {
 
     private function emitPartial($token, $class) {
         #$token = self::htmlentities($token);
-        $token = htmlspecialchars($token, ENT_NOQUOTES);
+        $token = $this->processToken($token, $class);
         $class = $this->_lang->className($class);
         if ($class === '') {
             $this->write($token);
@@ -614,7 +673,7 @@ class Hyperlight {
 
     private function emitPop($token = '') {
         #$token = self::htmlentities($token);
-        $token = htmlspecialchars($token, ENT_NOQUOTES);
+        $token = $this->processToken($token, '');
         if (array_pop($this->_omitSpans))
             $this->write($token);
         else
