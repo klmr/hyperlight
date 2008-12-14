@@ -760,4 +760,15 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
     echo "</$tag>";
 }
 
+/**
+ * Is the same as:
+ * <code>
+ *  hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
+ * </code>
+ * @see hyperlight()
+ */
+function hyperlight_file($filename, $lang, $tag = 'pre', array $attributes = array()) {
+    hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
+}
+
 ?>
