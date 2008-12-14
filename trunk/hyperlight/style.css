@@ -55,7 +55,7 @@ p {
 pre.source-code {
     /*border: 1px solid silver;*/
     border: 1px solid black;
-    font-family: Consolas;
+    font-family: Consolas, Courier New;
     font-size: 0.9em;
     padding: 0.2em;
 }

@@ -35,7 +35,7 @@
                 <p>At this point, let’s assume that you have already downloaded and unzipped the package into its target location because let’s face it, who wants to have an umpteenth description of how to unzip an archive?</p>
                 <p>To use Hyperlight, all you have to do is to include the main file into your <acronym>PHP</acronym> source code and invoke the highlighting function. To highlight a source code, this is all you need to do:</p>
                 <?php hyperlight('hyperlight($code, $language);', 'iphp'); ?>
-                <p>To put this in some more context, imagine that you want to highlight the current file. Our program might not be self-replicating or self-modifying but it sure is self-enhancing.</p>
+                <p>To put this in some more context, imagine that you want to highlight the current file. Our program might not be self-replicating or self-modifying but it sure is self-embellishing.</p>
                 <?php hyperlight('
 <?php require \'path/to/hyperlight.php\'; ?>
 <html>
@@ -48,7 +48,7 @@
     </body>
 </html>', 'php'); ?>
                 <p>It really can’t get much simpler than that.</p>
-                <p>Notice that we didn’t have to write down a tag to surround our code. <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> does this for us. But don’t worry about lack of control. This function has two more optional arguments that you can use to control how these surrounding tags should look like. The first controls which surrounding tag to use and defaults to – what a surprise – <?php hyperlight('<pre>', 'xml', 'code'); ?>. The second argument controls the attributes that the tag should have (in addition to the <code>class</code>). For a detailed description of how to use these arguments, read the reference entry on the <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> function.</p>
+                <p>Notice that we didn’t have to put special <acronym>HTML</acronym> tags around our code. <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> does this for us. But don’t worry about lack of control. This function has two more optional arguments that you can use to control how these surrounding tags should look like. The first controls which surrounding tag to use and defaults to – what a surprise – <?php hyperlight('<pre>', 'xml', 'code'); ?>. The second argument controls the attributes that the tag should have (in addition to the <code>class</code>). For a detailed description of how to use these arguments, read the reference entry on the <a href="../ref/#hyperlight-function"><code>hyperlight</code></a> function.</p>
                 <div class="notice">
                     <p>Regardless of the fourth argument, the <code>class</code> attribute is <strong>always</strong> present and can’t be removed – and shouldn’t be: it’s necessary for the <acronym>CSS</acronym> themes to work.</p>
                 </div>

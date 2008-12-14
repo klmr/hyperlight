@@ -35,7 +35,7 @@ $highlighter->theResult();', 'iphp'); ?>
                     <p><strong>Easy to extend.</strong> The syntax definitions are written in PHP but only very basic language grasp is needed. Syntax definitions are concise and for most tasks, existing templates can be used and it’s enough to customize a basic set of features.</p>
                     </li>
                     <li>
-                    <p><strong>Powerful.</strong> The syntax definitions use regular expressions but they support stateful parsing through a very simple mechanism. This makes implementing conext free grammars effortless.</p>
+                    <p><strong>Powerful.</strong> The syntax definitions use regular expressions but they support stateful parsing through a very simple mechanism. This makes implementing context free grammars effortless.</p>
                     </li>
                     <li>
                     <p><strong>Full <acronym>CSS</acronym> support.</strong> One single <acronym>CSS</acronym> file can be used for all languages to give a consistent look &amp; feel. Elements may be nested for refinements (e.g. highlighting “TODO” items in comments):</p>

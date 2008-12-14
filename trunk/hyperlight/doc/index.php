@@ -24,7 +24,7 @@
                 <ul>
                     <li><a href="#preface">Preface</a></li>
                     <li>
-                        <a href="user-guide">User Guide</a>
+                        <a href="user-guide/">User Guide</a>
                         <ul>
                             <li><a href="user-guide/#introduction">Introduction</a></li>
                             <li><a href="user-guide/#getting-started">Getting Started</a></li>
@@ -43,6 +43,7 @@
                             <li><a href="">Class <code>NoMatchingRuleException</a></li>
                         </ul>
                     </li>
+                    <li><a href="faq/">Frequently Asked Questions</a></li>
                 </ul>
 
                 <a id="preface"></a><h2>Preface</h2>

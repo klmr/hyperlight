@@ -1,7 +1,5 @@
 <?php
 
-require_once 'xml.php';
-
 // TODO
 // - Fill the scaffold below!
 // - More keywords? What about functions?
@@ -23,7 +21,10 @@ class PhpLanguage extends HyperLanguage {
             )
         ));
 
-        $html = $this->addNestedLanguage(new XmlLanguage(), 'php');
+        //$html = $this->addNestedLanguage(new XmlLanguage(), 'php');
+        $html = 'html';
+
+        $this->addPostProcessing('html', HyperLanguage::fromName('xml'));
 
         $this->addStates(array(
             'init' => array('php', $html),
@@ -32,6 +33,7 @@ class PhpLanguage extends HyperLanguage {
                 'keyword' => array('', 'type', 'literal', 'operator', 'builtin'),
                 'identifier', 'variable'),
             'variable' => array('identifier'),
+            'html' => array()
         ));
 
         $this->addRules(array(
@@ -56,6 +58,7 @@ class PhpLanguage extends HyperLanguage {
         $this->addMappings(array(
             'char' => 'string',
             'variable' => 'tag',
+            'html' => 'string',
         ));
     }
 }
