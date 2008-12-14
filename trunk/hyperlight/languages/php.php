@@ -6,7 +6,6 @@
 // - More keywords? What about functions?
 // - String interpolation and escaping.
 // - Usual stuff for doc comments
-// - What about html content?
 // - Heredoc et al.
 // - More complex nested variable names.
 
@@ -14,7 +13,7 @@ class PhpLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'PHP',
-            parent::VERSION => '0.1',
+            parent::VERSION => '0.2',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -22,13 +21,10 @@ class PhpLanguage extends HyperLanguage {
             )
         ));
 
-        //$html = $this->addNestedLanguage(new XmlLanguage(), 'php');
-        $html = 'html';
-
         $this->addPostProcessing('html', HyperLanguage::fromName('xml'));
 
         $this->addStates(array(
-            'init' => array('php', $html),
+            'init' => array('php', 'html'),
             'php' => array(
                 'comment', 'string', 'char', 'number',
                 'keyword' => array('', 'type', 'literal', 'operator', 'builtin'),
@@ -39,8 +35,7 @@ class PhpLanguage extends HyperLanguage {
 
         $this->addRules(array(
             'php' => new Rule('/<\?php/', '/\?>/'),
-            $html => new Rule('/(?=.)/', '/(?=<\?php)/'),
-            //$html => new Rule('/./'),
+            'html' => new Rule('/(?=.)/', '/(?=<\?php)/'),
             'comment' => Rule::C_COMMENT,
             'string' => Rule::C_DOUBLEQUOTESTRING,
             'char' => Rule::C_SINGLEQUOTESTRING,
