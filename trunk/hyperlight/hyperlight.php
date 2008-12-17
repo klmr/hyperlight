@@ -1,5 +1,16 @@
 <?php
 
+# FIXME Nested syntax elements create redundant nested tags under certain
+# circumstances. This can be reproduced by the following PHP snippet:
+#
+#   <pre class="<?php echo; ? >">
+#
+# (Remove space between `?` and `>`).
+# Although this no longer occurs, it is fixed by checking for `$token === ''`
+# in the `emit*` methods. This should never happen anyway.
+# Probably something to do with the zero-width lookahead in the PHP syntax
+# definition.
+
 require_once 'preg_helper.php';
 
 if (!function_exists('array_peek')) {
@@ -20,6 +31,7 @@ function dump($obj, $descr = null) {
     var_dump($obj);
     $dump = ob_get_clean();
     ?><pre><?php echo htmlspecialchars($dump); ?></pre><?php
+    return true;
 }
 
 class NoMatchingRuleException extends Exception {
@@ -398,8 +410,6 @@ class HyperlightCompiledLanguage {
                 if ($elem === null)
                     continue;
                 if (is_string($key)) {
-                    //$newstate[] = $key;
-
                     if (!is_array($elem))
                         $elem = array($elem);
 
@@ -526,7 +536,8 @@ class Hyperlight {
     public function render($code) {
         // Normalize line breaks.
         $this->_code = preg_replace('/\r\n?/', "\n", $code);
-        return $this->renderCode();
+        $fm = calculate_fold_marks($this->_code, 'vb');
+        return apply_fold_marks($this->renderCode(), $fm);
     }
 
     public function renderAndPrint($code) {
@@ -545,8 +556,10 @@ class Hyperlight {
         // tags first:
 
         for ($i = 1; $i < count($this->_states); ++$i)
-            if (!$this->_omitSpans[$i - 1])
-                $this->write("<span class=\"$this->_states[$i]\">");
+            if (!$this->_omitSpans[$i - 1]) {
+                $class = $this->_lang->className($this->_states[$i]);
+                $this->write("<span class=\"$class\">");
+            }
 
         // Emergency break to catch faulty rules.
         $prev_pos = -1;
@@ -598,7 +611,7 @@ class Hyperlight {
             // We take the closest hit:
 
             if ($closest_hit[1] > $pos)
-                $this->emit(substr($code, $pos, $closest_hit[1] - $pos), array_peek($this->_states));
+                $this->emit(substr($code, $pos, $closest_hit[1] - $pos));
 
             $prev_pos = $pos;
             $pos = $closest_hit[1] + strlen($closest_hit[0]);
@@ -664,29 +677,34 @@ class Hyperlight {
         }
     }
 
-    private function processToken($token, $class = '') {
-        if (array_key_exists($class, $this->_postProcessors))
-            return $this->_postProcessors[$class]->render($token);
+    private function processToken($token) {
+        if ($token === '')
+            return '';
+        $nest_lang = array_peek($this->_states);
+        if (array_key_exists($nest_lang, $this->_postProcessors))
+            return $this->_postProcessors[$nest_lang]->render($token);
         else
             #return self::htmlentities($token);
             return htmlspecialchars($token, ENT_NOQUOTES);
     }
 
-    private function emit($token, $class = null) {
-        $token = $this->processToken($token, $class);
-        if ($class === null)
+    private function emit($token, $class = '') {
+        $token = $this->processToken($token);
+        if ($token === '')
+            return;
+        $class = $this->_lang->className($class);
+        if ($class === '')
             $this->write($token);
-        else {
-            $class = $this->_lang->className($class);
+        else
             $this->write("<span class=\"$class\">$token</span>");
-        }
     }
 
     private function emitPartial($token, $class) {
-        $token = $this->processToken($token, $class);
+        $token = $this->processToken($token);
         $class = $this->_lang->className($class);
         if ($class === '') {
-            $this->write($token);
+            if ($token !== '')
+                $this->write($token);
             array_push($this->_omitSpans, true);
         }
         else {
@@ -696,7 +714,7 @@ class Hyperlight {
     }
 
     private function emitPop($token = '', $class = '') {
-        $token = $this->processToken($token, $class);
+        $token = $this->processToken($token);
         if (array_pop($this->_omitSpans))
             $this->write($token);
         else
@@ -769,6 +787,41 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
  */
 function hyperlight_file($filename, $lang, $tag = 'pre', array $attributes = array()) {
     hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
+}
+
+function calculate_fold_marks($code, $lang) {
+    if ($lang !== 'vb') return array();
+    $lines = preg_split('/\r|\n|\r\n/', $code);
+    $fold_begin = preg_grep('/^\s*#Region/', $lines);
+    $fold_end = preg_grep('/^\s*#End Region/', $lines);
+    if (count($fold_begin) !== count($fold_end) or count($fold_begin) === 0)
+        return array();
+
+    $fb = array();
+    $fe = array();
+    foreach ($fold_begin as $line => $_)
+        $fb[] = $line;
+
+    foreach ($fold_end as $line => $_)
+        $fe[] = $line;
+
+    $ret = array();
+    for ($i = 0; $i < count($fb); $i++)
+        $ret[$fb[$i]] = $fe[$i];
+}
+
+function apply_fold_marks($code, $fold_marks) {
+    if ($fold_marks === null or count($fold_marks) === 0)
+        return $code;
+
+    $lines = explode('\n', $code);
+
+    foreach ($fold_marks as $begin => $end) {
+        $code[$begin] = '<span class="fold-header">' . $code[$begin] . '</span><div class="fold">';
+        $code[$end] .= '</div>';
+    }
+
+    return implode('\n', $code);
 }
 
 ?>

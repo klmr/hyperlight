@@ -29,6 +29,9 @@ function hyperlight_test($file, $lang = null) {
     <link rel="stylesheet" type="text/css" href="colors/<?php echo $colorscheme; ?>.css"/>
 <?php if (isset($_GET['debug'])): ?>
     <style type="text/css">
+        pre div.fold {
+            border: 1px solid red;
+        }
         pre span[class]:before, pre span[class]:after {
             background: #FFC;
             color: black;
@@ -58,6 +61,7 @@ $ ./main
 Hello, world!</pre>
     Congratulations! You've just run your first C++ program.
 <?php
+
 
 hyperlight_test('simple.css', 'css');
 hyperlight_test('../' . basename(__FILE__), 'php');
