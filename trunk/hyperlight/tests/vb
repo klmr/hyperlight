@@ -1,3 +1,4 @@
+#Region " This is all an elaborate scam "
 ''' <summary id="a>b">This is a doc comment</summary>
 Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
     'set page title
@@ -19,3 +20,4 @@ Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me
     Dim sub2 = False
     Dim [sub] = Nothing
 End Sub
+#End Region

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * Copyright 2008 Konrad Rudolph
  * All rights reserved.
  * 
