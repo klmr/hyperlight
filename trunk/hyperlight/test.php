@@ -27,11 +27,23 @@ function hyperlight_test($file, $lang = null) {
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>Hyperlight Syntax Highlighter</title>
     <link rel="stylesheet" type="text/css" href="colors/<?php echo $colorscheme; ?>.css"/>
+    <style type="text/css">
+        pre .fold-header, pre .fold-footer { cursor: pointer; }
+    </style>
+    <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+    <script type="text/javascript">
+        $().ready(function() {
+            $('pre .fold').hide();
+            $('pre .fold-header').click(function() {
+                $(this).next().toggle('fast');
+            });
+            $('pre .fold-footer').click(function() {
+                $(this).prev().toggle('fast');
+            });
+        });
+    </script>
 <?php if (isset($_GET['debug'])): ?>
     <style type="text/css">
-        pre div.fold {
-            border: 1px solid red;
-        }
         pre span[class]:before, pre span[class]:after {
             background: #FFC;
             color: black;
@@ -63,11 +75,11 @@ Hello, world!</pre>
 <?php
 
 
+hyperlight_test('VB');
 hyperlight_test('simple.css', 'css');
 hyperlight_test('../' . basename(__FILE__), 'php');
 hyperlight_test('preg_helper.php', 'php');
 hyperlight_test('pizzachili_api.h', 'cpp');
-hyperlight_test('VB');
 hyperlight_test('XML');
 hyperlight_test('style.css', 'css');
 

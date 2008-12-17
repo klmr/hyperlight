@@ -808,20 +808,23 @@ function calculate_fold_marks($code, $lang) {
     $ret = array();
     for ($i = 0; $i < count($fb); $i++)
         $ret[$fb[$i]] = $fe[$i];
+
+    return $ret;
 }
 
 function apply_fold_marks($code, $fold_marks) {
     if ($fold_marks === null or count($fold_marks) === 0)
         return $code;
 
-    $lines = explode('\n', $code);
+    $lines = explode("\n", $code);
 
     foreach ($fold_marks as $begin => $end) {
-        $code[$begin] = '<span class="fold-header">' . $code[$begin] . '</span><div class="fold">';
-        $code[$end] .= '</div>';
+        $lines[$begin] = '<span class="fold-header">' . $lines[$begin] . '</span>';
+        $lines[$begin + 1] = '<span class="fold">' . $lines[$begin + 1];
+        $lines[$end] = '</span><span class="fold-footer">' . $lines[$end] . '</span>';
     }
 
-    return implode('\n', $code);
+    return implode("\n", $lines);
 }
 
 ?>
