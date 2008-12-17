@@ -1,15 +1,46 @@
 <?php
 
-# FIXME Nested syntax elements create redundant nested tags under certain
-# circumstances. This can be reproduced by the following PHP snippet:
-#
-#   <pre class="<?php echo; ? >">
-#
-# (Remove space between `?` and `>`).
-# Although this no longer occurs, it is fixed by checking for `$token === ''`
-# in the `emit*` methods. This should never happen anyway.
-# Probably something to do with the zero-width lookahead in the PHP syntax
-# definition.
+/*
+ * Copyright 2008 Konrad Rudolph
+ * All rights reserved.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/*
+ * TODO list
+ *
+ * - FIXME Nested syntax elements create redundant nested tags under certain
+ *   circumstances. This can be reproduced by the following PHP snippet:
+ *
+ *      <pre class="<?php echo; ? >">
+ *
+ *   (Remove space between `?` and `>`).
+ *   Although this no longer occurs, it is fixed by checking for `$token === ''`
+ *   in the `emit*` methods. This should never happen anyway. Probably something
+ *   to do with the zero-width lookahead in the PHP syntax definition.
+ *
+ * - `hyperlight_file`: automatically recognize file type from extension
+ *
+ * - `hyperlight_calculate_fold_marks`: refactor, write proper handler
+ *
+ */
 
 require_once 'preg_helper.php';
 
@@ -536,8 +567,8 @@ class Hyperlight {
     public function render($code) {
         // Normalize line breaks.
         $this->_code = preg_replace('/\r\n?/', "\n", $code);
-        $fm = calculate_fold_marks($this->_code, 'vb');
-        return apply_fold_marks($this->renderCode(), $fm);
+        $fm = hyperlight_calculate_fold_marks($this->_code, 'vb');
+        return hyperlight_apply_fold_marks($this->renderCode(), $fm);
     }
 
     public function renderAndPrint($code) {
@@ -789,7 +820,7 @@ function hyperlight_file($filename, $lang, $tag = 'pre', array $attributes = arr
     hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
 }
 
-function calculate_fold_marks($code, $lang) {
+function hyperlight_calculate_fold_marks($code, $lang) {
     if ($lang !== 'vb') return array();
     $lines = preg_split('/\r|\n|\r\n/', $code);
     $fold_begin = preg_grep('/^\s*#Region/', $lines);
@@ -812,16 +843,16 @@ function calculate_fold_marks($code, $lang) {
     return $ret;
 }
 
-function apply_fold_marks($code, $fold_marks) {
+function hyperlight_apply_fold_marks($code, $fold_marks) {
     if ($fold_marks === null or count($fold_marks) === 0)
         return $code;
 
     $lines = explode("\n", $code);
 
     foreach ($fold_marks as $begin => $end) {
-        $lines[$begin] = '<span class="fold-header">' . $lines[$begin] . '</span>';
+        $lines[$begin] = '<span class="fold-header">' . $lines[$begin] . '<span class="dots"> </span></span>';
         $lines[$begin + 1] = '<span class="fold">' . $lines[$begin + 1];
-        $lines[$end] = '</span><span class="fold-footer">' . $lines[$end] . '</span>';
+        $lines[$end + 1] = '</span>' . $lines[$end + 1];
     }
 
     return implode("\n", $lines);

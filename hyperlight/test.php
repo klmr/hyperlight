@@ -28,17 +28,22 @@ function hyperlight_test($file, $lang = null) {
     <title>Hyperlight Syntax Highlighter</title>
     <link rel="stylesheet" type="text/css" href="colors/<?php echo $colorscheme; ?>.css"/>
     <style type="text/css">
-        pre .fold-header, pre .fold-footer { cursor: pointer; }
+        pre { padding: 0.5em; }
+        pre .fold-header { cursor: pointer; }
+        pre .fold-header .dots { display: none; }
+        pre .fold-header { padding-left: 1px; }
+        pre .fold-header.closed { border: 1px dotted ; padding: 0 0.4em; padding-left: 0; }
+        pre .fold-header.closed .dots { display: inline; }
+        pre .fold-header.closed .dots:after { content: '…'; }
     </style>
     <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
     <script type="text/javascript">
         $().ready(function() {
             $('pre .fold').hide();
+            $('pre .fold-header').toggleClass('closed');
             $('pre .fold-header').click(function() {
                 $(this).next().toggle('fast');
-            });
-            $('pre .fold-footer').click(function() {
-                $(this).prev().toggle('fast');
+                $(this).toggleClass('closed');
             });
         });
     </script>
