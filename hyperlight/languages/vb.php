@@ -12,6 +12,8 @@ class VbLanguage extends HyperLanguage {
             )
         ));
 
+        $this->setExtensions(array('vb'));
+
         $this->setCaseInsensitive(true);
 
         $this->addStates(array(
