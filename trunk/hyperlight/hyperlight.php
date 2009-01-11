@@ -25,6 +25,7 @@
 
 /*
  * TODO list
+ * =========
  *
  * - FIXME Nested syntax elements create redundant nested tags under certain
  *   circumstances. This can be reproduced by the following PHP snippet:
@@ -39,6 +40,8 @@
  * - `hyperlight_file`: automatically recognize file type from extension
  *
  * - `hyperlight_calculate_fold_marks`: refactor, write proper handler
+ *
+ * - Line numbers (on client-side?)
  *
  */
 
@@ -139,11 +142,13 @@ abstract class HyperLanguage {
     private $_rules = array();
     private $_mappings = array();
     private $_info = array();
+    private $_extensions = array();
     private $_caseInsensitive = false;
     private $_postProcessors = array();
 
     private static $_languageCache = array();
     private static $_compiledLanguageCache = array();
+    private static $_filetypes;
 
     /**
      * Indices for information.
@@ -155,6 +160,25 @@ abstract class HyperLanguage {
     const WEBSITE = 5;
     const EMAIL = 6;
 
+    public static function nameFromExt($ext) {
+        if (self::$_filetypes === null) {
+            $ft_content = file('languages/filetypes', 1);
+
+            foreach ($ft_content as $line) {
+                list ($name, $extensions) = explode(':', trim($line));
+                $extensions = explode(',', $extensions);
+                // Inverse lookup.
+                foreach ($extensions as $extension)
+                    $ft_data[$extension] = $name;
+            }
+            self::$_filetypes = $ft_data;
+        }
+        $ext = strtolower($ext);
+        return
+            array_key_exists($ext, self::$_filetypes) ?
+            self::$_filetypes[strtolower($ext)] : null;
+    }
+
     public static function compile(HyperLanguage $lang) {
         $id = $lang->id();
         if (!isset(self::$_compiledLanguageCache[$id]))
@@ -164,6 +188,11 @@ abstract class HyperLanguage {
 
     public static function compileFromName($lang) {
         return self::compile(self::fromName($lang));
+    }
+
+    protected static function exists($lang) {
+        return isset(self::$_languageCache[$lang]) or
+               file_exists("languages/$lang.php");
     }
 
     protected static function fromName($lang) {
@@ -223,6 +252,10 @@ abstract class HyperLanguage {
 
     protected function setInfo(array $info) {
         $this->_info = $info;
+    }
+
+    protected function setExtensions(array $extensions) {
+        $this->_extensions = $extensions;
     }
 
     protected function addPostprocessing($rule, HyperLanguage $language) {
@@ -315,6 +348,7 @@ abstract class HyperLanguage {
     private function makeCompiledLanguage() {
         return new HyperlightCompiledLanguage(
             $this->_info,
+            $this->_extensions,
             $this->_states,
             $this->_rules,
             $this->_mappings,
@@ -341,14 +375,16 @@ abstract class HyperLanguage {
 
 class HyperlightCompiledLanguage {
     private $_info;
+    private $_extensions;
     private $_states;
     private $_rules;
     private $_mappings;
     private $_caseInsensitive;
     private $_postProcessors = array();
 
-    public function __construct($info, $states, $rules, $mappings, $caseInsensitive, $postProcessors) {
+    public function __construct($info, $extensions, $states, $rules, $mappings, $caseInsensitive, $postProcessors) {
         $this->_info = $info;
+        $this->_extensions = $extensions;
         $this->_caseInsensitive = $caseInsensitive;
         $this->_states = $this->compileStates($states);
         $this->_rules = $this->compileRules($rules);
@@ -362,7 +398,7 @@ class HyperlightCompiledLanguage {
         return $this->_info[HyperLanguage::NAME];
     }
 
-    public function autorName() {
+    public function authorName() {
         if (!array_key_exists(HyperLanguage::AUTHOR, $this->_info))
             return null;
         $author = $this->_info[HyperLanguage::AUTHOR];
@@ -392,6 +428,10 @@ class HyperlightCompiledLanguage {
     public function authorContact() {
         $email = $this->authorEmail();
         return $email !== null ? $email : $this->authorWebsite();
+    }
+
+    public function extensions() {
+        return $this->_extensions;
     }
 
     public function state($stateName) {
@@ -786,6 +826,10 @@ class Hyperlight {
  *          Attributes must be given as a hash of key value pairs.
  */
 function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
+    if ($code == '')
+        die("`hyperlight` needs a code to work on!");
+    if ($lang == '')
+        die("`hyperlight` needs to know the code's language!");
     if (is_array($tag) and !empty($attributes))
         die("Can't pass array arguments for \$tag *and* \$attributes to `hyperlight`!");
     if ($tag === '')
@@ -816,8 +860,27 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
  * </code>
  * @see hyperlight()
  */
-function hyperlight_file($filename, $lang, $tag = 'pre', array $attributes = array()) {
+function hyperlight_file($filename, $lang = null, $tag = 'pre', array $attributes = array()) {
+    if ($lang == '') {
+        // Try to guess it from file extension.
+        $pos = strrpos($filename, '.');
+        if ($pos !== false) {
+            $ext = substr($filename, $pos + 1);
+            $lang = HyperLanguage::nameFromExt($ext);
+        }
+    }
     hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
+}
+
+if (defined('HYPERLIGHT_SHORTCUT')) {
+    function hy() {
+        $args = func_get_args();
+        call_user_func_array('hyperlight', $args);
+    }
+    function hyf() {
+        $args = func_get_args();
+        call_user_func_array('hyperlight_file', $args);
+    }
 }
 
 function hyperlight_calculate_fold_marks($code, $lang) {

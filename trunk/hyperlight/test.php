@@ -18,6 +18,11 @@ function hyperlight_test($file, $lang = null) {
         "<h2>Test for language {$pretty_name}</h2>" :
         "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
     echo "$title\n";
+    $lines = count(explode("\n", $code)) - 1;
+    echo '<ol class="line-numbers">';
+    for ($i = 0; $i < $lines; $i++)
+        echo '<li><div>&nbsp;</div></li>';
+    echo '</ol>';
     ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->renderAndPrint($code); ?></pre><?php
 }
 
@@ -28,22 +33,64 @@ function hyperlight_test($file, $lang = null) {
     <title>Hyperlight Syntax Highlighter</title>
     <link rel="stylesheet" type="text/css" href="colors/<?php echo $colorscheme; ?>.css"/>
     <style type="text/css">
-        pre { padding: 0.5em; }
-        pre .fold-header { cursor: pointer; }
+        pre { padding: 0.5em; padding-left: 16px; }
+        pre .fold-header { cursor: pointer; display: block; float: left; height: 1em; }
         pre .fold-header .dots { display: none; }
-        pre .fold-header { padding-left: 1px; }
-        pre .fold-header.closed { border: 1px dotted ; padding: 0 0.4em; padding-left: 0; }
+        pre .fold-header { padding-left: 1px; border: 1px solid transparent; }
+        pre .fold-header.closed { border: 1px dotted; padding: 0 0.4em; padding-left: 1px; }
         pre .fold-header.closed .dots { display: inline; }
         pre .fold-header.closed .dots:after { content: '…'; }
+        /*
+        pre .fold-header { margin-left: -16px; }
+        pre .fold-header:before { content: '– '; }
+        pre .fold-header.closed:before { content: '+ '; }
+        */
+
+pre { font-size: 1em; line-height: 16px; }
+
+        .line-numbers {
+            color: gray;
+            float: left;
+            width: 0;
+            margin: 0;
+            list-style-type: decimal;
+        }
+
+        .line-numbers li {
+            margin: 0;
+            padding: 0;
+            font-size: 0.6em;
+            font-family: Georgia;
+        }
+
+        .line-numbers li div {
+            font-family: Courier New;
+            font-size: 1.6666em;
+            line-height: 16px;
+        }
+
+        .line-numbers.hidden { visibility: hidden; }
     </style>
     <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
     <script type="text/javascript">
+        //  Collapse and expand code folds.
         $().ready(function() {
             $('pre .fold').hide();
             $('pre .fold-header').toggleClass('closed');
             $('pre .fold-header').click(function() {
                 $(this).next().toggle('fast');
                 $(this).toggleClass('closed');
+            });
+        });
+
+        // Hide and show line numbers.
+        $().ready(function () {
+            $('.line-numbers').addClass('hidden');
+            $('.source-code').hover(function () {
+                $(this).prev().removeClass('hidden');
+            },
+            function() {
+                $(this).prev().addClass('hidden');
             });
         });
     </script>

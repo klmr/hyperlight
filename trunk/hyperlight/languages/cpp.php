@@ -9,13 +9,15 @@ class CppLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'C++',
-            parent::VERSION => '0.2',
+            parent::VERSION => '0.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
                 parent::EMAIL => 'konrad_rudolph@madrat.net'
             )
         ));
+
+        $this->setExtensions(array('c', 'cc', 'cpp', 'h', 'hpp', 'icl', 'ipp'));
 
         $keyword = array('keyword' => array('', 'type', 'literal', 'operator'));
         $common = array(

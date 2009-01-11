@@ -12,6 +12,8 @@ class XmlLanguage extends HyperLanguage {
             )
         ));
 
+        $this->setExtensions(array('xml', 'xsl', 'xslt', 'xsd', 'manifest'));
+
         $inline = array('entity');
         $common = array('tagname', 'attribute', 'value' => array('double', 'single'));
 

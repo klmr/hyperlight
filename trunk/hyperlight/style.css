@@ -37,6 +37,9 @@ body {
     z-index: 99;
 }
 
+#guide-menu {
+}
+
 #content .text {
     position: relative;
     padding: 1em 0;
@@ -52,11 +55,13 @@ p {
     text-align: justify;
 }
 
-pre.source-code {
-    /*border: 1px solid silver;*/
+.source-code {
     border: 1px solid black;
     font-family: Consolas, Courier New;
     font-size: 0.9em;
+}
+
+pre {
     padding: 0.2em;
 }
 

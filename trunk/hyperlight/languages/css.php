@@ -4,13 +4,15 @@ class CssLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'CSS',
-            parent::VERSION => '0.6',
+            parent::VERSION => '0.7',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
                 parent::EMAIL => 'konrad_rudolph@madrat.net'
             )
         ));
+
+        $this->setExtensions(array('css'));
 
         // The following does not conform to the specs but it is necessary
         // else numbers wouldn't be recognized any more.

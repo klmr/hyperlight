@@ -13,13 +13,15 @@ class PhpLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'PHP',
-            parent::VERSION => '0.2',
+            parent::VERSION => '0.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
                 parent::EMAIL => 'konrad_rudolph@madrat.net'
             )
         ));
+
+        $this->setExtensions(array('php', 'php3', 'php4', 'php5', 'inc'));
 
         $this->addPostProcessing('html', HyperLanguage::fromName('xml'));
 
