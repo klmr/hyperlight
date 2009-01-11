@@ -1,0 +1,992 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule" xmlns:thr="http://purl.org/syndication/thread/1.0">
+
+ <title type="html">Top Questions - Stack Overflow</title>
+ <link rel="self" href="http://stackoverflow.com/feeds" type="application/atom+xml" />
+ <link rel="alternate" href="http://stackoverflow.com/questions" type="text/html" />
+ <subtitle>most recent 30 from stackoverflow.com</subtitle>
+ <updated>2008-10-25T13:03:12Z</updated>
+ <id>http://stackoverflow.com/feeds</id>
+ <creativeCommons:license>http://www.creativecommons.org/licenses/by-nc/2.5/rdf</creativeCommons:license>
+ 
+ 
+     <entry>
+        <id>http://stackoverflow.com/questions/236354/error-handling-when-taking-user-input</id>
+       <title type="html">error handling when taking user input</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="c++" />  
+        <author><name>dieter</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236354/error-handling-when-taking-user-input" />
+       <published>2008-10-25T12:50:59Z</published>
+       <updated>2008-10-25T13:03:10Z</updated>
+       <summary type="html">&lt;p&gt;Hello everybody,&lt;/p&gt;
+
+&lt;p&gt;I am a beginner in c++ and I have a small problem:&lt;/p&gt;
+
+&lt;p&gt;my code displays a simple menu to the user providing three options:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cout &amp;lt;&amp;lt; &quot;\nQuadratic equation: a*X^2 + b*X + c = 0 main menu: &quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;r&amp;gt;  Give new coefficients&quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;c&amp;gt;  Calculate equations solutions&quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;t&amp;gt;  Terminate the program&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;What I want is now is that, when a user enters:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;aer -&gt;invalid input entered, try again &lt;/li&gt;
+&lt;li&gt;1 or any other number-&gt;invalid input entered, try again &lt;/li&gt;
+&lt;li&gt;rt -&gt;invalid input entered,try again
+(here the first character is correct but he entered 2 characters)&lt;/li&gt;
+&lt;li&gt;cf -&gt;invalid input entered, try again&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ONLY IF THE USER ENTERS CORRECTLY ONE OF THE 3 SIMPLE CHARACTERS (r,c,t NONSENSITIVE CASE) to do sth. Otherwise a massage for invalid input should be printed and then the  main menu should appear again&lt;/p&gt;
+
+&lt;p&gt;I tried this but it doesnt work:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;char displayMainMenu()
+{
+char mainMenuChoice;
+cout &amp;lt;&amp;lt; &quot;\nQuadratic equation: a*X^2 + b*X + c = 0 main menu: &quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;r&amp;gt;  Give new coefficients&quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;c&amp;gt;  Calculate equations solutions&quot;; 
+cout &amp;lt;&amp;lt; &quot;\n &amp;lt;t&amp;gt;  Terminate the program&quot;;
+cout&amp;lt;&amp;lt;&quot;Enter choice : &quot;;
+cin&amp;gt;&amp;gt;mainMenuChoice;
+return mainMenuChoice;
+}
+
+int main()
+{
+bool done = false;
+while(!done)
+{
+    char choice = displayMainMenu();  
+
+    if( isalpha(choice) )
+    {
+
+    	switch(tolower(choice))
+    	{
+    	case 'r':
+    		DoSTH1();
+    		break;
+    	case 'c':
+    		DoSTH2();
+    		break;  
+    	case 't':
+    		DoSTH3();                   
+    		break;
+    	default:
+    		cout&amp;lt;&amp;lt;&quot;Invalid choice!\n&quot;&amp;lt;&amp;lt;endl;
+    	}   
+
+    }
+
+}
+return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I hope u can help me&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236354/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/185312/to-be-nor-not-to-be-with-duplicate-models</id>
+       <title type="html">To be nor not to be with duplicate models</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="design" /><category scheme="http://stackoverflow.com/feeds/tags" term="best-practices" />  
+        <author><name>questzen</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/185312/to-be-nor-not-to-be-with-duplicate-models" />
+       <published>2008-10-08T23:14:34Z</published>
+       <updated>2008-10-25T13:02:53Z</updated>
+       <summary type="html">&lt;p&gt;In my new assignment, I have inherited this legacy chunk, which I had to redesign and refactor. The scope was initially restricted to the Presentation tier, which happened to be the bulkiest of all. During the course of analysis, it was realised that the application was built over a period of time with various modules using different classes to depict the same model. &lt;/p&gt;
+
+&lt;p&gt;These models are actually used to bind information into both view and db tier (Code reuse somebody?). The binding logic is a complex routine and was stabilised after multiple rounds of testing. Now I have this dilema of whether to retain these semantically duplicate but syntactically inconsistent models or to start with a clean slate. The second option would mean revamping the whole application and the schedules don't allow for that, but I have a bad inkling. 
+Can you guys share some inside thoughts (pros &amp;amp; cons) and any unforeseen problems I may face in future.&lt;/p&gt;
+
+&lt;p&gt;Giving the following analogy which closely reflects the state of affairs. &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;To start with, there is a user details module, which is more like a getter. The view gets rendered using the TO (transfer object) structure provided for this. Say 'Class UserInfo'&lt;/li&gt;
+&lt;li&gt;Later a new requirement came up and a provision to edit the details was provided. Whoever coded it decided that they would use a new TO structure and came up with their own 'Class UserEditInfo'. Which is kind of super set of earlier class.&lt;/li&gt;
+&lt;li&gt;Finally at a different point of time, a new enhancement to keep track of user transactions was made and guess what, a new 'Class UserDetails' was created.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;All the above have bindings that map them to external tier and JSP logic, trying to eliminate two of the models would cause repurcussions in the whole Business tier (which is bad). To make things worse, the good old cowboys are nolonger around to help us out. Hope this helps&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/185312/answers" thr:count="4"/>
+       <thr:total>4</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/235240/general-business-object-practices-and-exception-errors-redux</id>
+       <title type="html">General Business Object Practices (and exception errors - redux)</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="objects" /><category scheme="http://stackoverflow.com/feeds/tags" term="c#" /><category scheme="http://stackoverflow.com/feeds/tags" term="error-handling" /><category scheme="http://stackoverflow.com/feeds/tags" term="errors" />  
+        <author><name>stephenbayer</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/235240/general-business-object-practices-and-exception-errors-redux" />
+       <published>2008-10-24T20:58:46Z</published>
+       <updated>2008-10-25T13:01:51Z</updated>
+       <summary type="html">&lt;p&gt;Recently, &lt;a href=&quot;http://stackoverflow.com/questions/204814/is-there-any-valid-reason-to-ever-ignore-a-caught-exception&quot; rel=&quot;nofollow&quot;&gt;I made a post about the developers I'm working with not using try catch blocks properly&lt;/a&gt;, and unfortuantely using try... catch blocks in critical situations and ignoring the exception error all together.  causing me major heart ache. Here is an example of one of the several thousand sections of code that they did this (some code left out that doesn't particuarly matter:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;public void AddLocations(BOLocation objBllLocations)
+{
+    try
+    {
+        dbManager.Open();
+        if (objBllLocations.StateID != 0)
+        {
+             // about 20 Paramters added to dbManager here
+        }
+        else
+        {
+           // about 19 Paramters added here
+        }
+        dbManager.ExecuteNonQuery(CommandType.StoredProcedure, &quot;ULOCATIONS.AddLocations&quot;);
+    }
+    catch (Exception ex)
+    {
+    }
+    finally
+    {
+        dbManager.Dispose();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is absolutely discusting, in my eyes, and does not notify the user in case some potential problem occurred. I know many people say that OOP is evil, and that adding multiple layers adds to the number of lines of code and to the complexity of the program, leading to possible issues with code maintainence.  Much of my programming background, I personally, have taken almost the same approach in this area. Below I have listed out a basic structure of the way I normally code in such a situation, and I've been doing this accross many languages in my career, but this particular code is in C#.  But the code below is a good basic idea of how I use the Objects, it seems to work for me, but since this is a good source of some fairly inteligent programming mines, I'd like to know If I should re-evaluate this technique that I've used for so many years.  Mainly, because, in the next few weeks, i'm going to be plunging into the not so good code from the outsourced developers and modifying huge sections of code.  i'd like to do it as well as possible.  sorry for the long code reference. &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;// *******************************************************************************************
+/// &amp;lt;summary&amp;gt;
+/// Summary description for BaseBusinessObject
+/// &amp;lt;/summary&amp;gt;
+/// &amp;lt;remarks&amp;gt;
+/// Base Class allowing me to do basic function on a Busines Object
+/// &amp;lt;/remarks&amp;gt;
+public class BaseBusinessObject : Object, System.Runtime.Serialization.ISerializable
+{
+    public enum DBCode
+    {   DBUnknownError,
+        DBNotSaved,
+        DBOK
+    }
+
+    // private fields, public properties
+    public int m_id = -1;
+    public int ID { get { return m_id; } set { m_id = value; } }
+    private int m_errorCode = 0;
+    public int ErrorCode { get { return m_errorCode; } set { m_errorCode = value; } }
+    private string m_errorMsg = &quot;&quot;;
+    public string ErrorMessage { get { return m_errorMsg; } set { m_errorMsg = value; } }
+    private Exception m_LastException = null;
+    public Exception LastException { get { return m_LastException; } set { m_LastException = value;} }
+
+    //Constructors
+    public BaseBusinessObject()
+    {
+        Initialize();
+    }
+    public BaseBusinessObject(int iID)
+    {
+        Initialize();
+        FillByID(iID);
+    }
+    // methods
+    protected void Initialize()
+    {
+        Clear();
+        Object_OnInit();
+        // Other Initializable code here
+    }
+    public void ClearErrors()
+    {
+        m_errorCode  = 0; m_errorMsg = &quot;&quot;; m_LastException = null;
+    }
+
+    void System.Runtime.Serialization.ISerializable.GetObjectData(
+         System.Runtime.Serialization.SerializationInfo info, 
+        System.Runtime.Serialization.StreamingContext context)
+    {
+      //Serialization code for Object must be implemented here
+    }
+    // overrideable methods
+    protected virtual void Object_OnInit()     
+    {
+        // User can override to add additional initialization stuff. 
+    }
+    public virtual BaseBusinessObject FillByID(int iID)
+    {
+        throw new NotImplementedException(&quot;method FillByID Must be implemented&quot;);
+    }
+    public virtual void Clear()
+    {
+        throw new NotImplementedException(&quot;method Clear Must be implemented&quot;);
+    }
+    public virtual DBCode Save()
+    {
+        throw new NotImplementedException(&quot;method Save Must be implemented&quot;);
+    }
+}
+// *******************************************************************************************
+/// &amp;lt;summary&amp;gt;
+/// Example Class that might be based off of a Base Business Object
+/// &amp;lt;/summary&amp;gt;
+/// &amp;lt;remarks&amp;gt;
+/// Class for holding all the information about a Customer
+/// &amp;lt;/remarks&amp;gt;
+public class BLLCustomer : BaseBusinessObject
+{
+    // ***************************************
+    // put field members here other than the ID
+    private string m_name = &quot;&quot;;
+    public string Name { get { return m_name; } set { m_name = value; } }
+    public override void Clear()
+    {
+        m_id = -1;
+        m_name = &quot;&quot;;
+    }
+    public override BaseBusinessObject FillByID(int iID)
+    {
+        Clear();
+        try
+        {
+            // usually accessing a DataLayerObject, 
+            //to select a database record
+        }
+        catch (Exception Ex)
+        {
+            Clear();
+            LastException = Ex;
+            // I can have many different exception, this is usually an enum
+            ErrorCode = 3;
+            ErrorMessage = &quot;Customer couldn't be loaded&quot;;
+        }
+        return this;
+    }
+    public override DBCode Save()
+    {
+        DBCode ret = DBCode.DBUnknownError;
+        try
+        {
+            // usually accessing a DataLayerObject, 
+            //to save a database record
+            ret = DBCode.DBOK;
+        }
+        catch (Exception Ex)
+        {
+            LastException = Ex;
+            // I can have many different exception, this is usually an enum
+            // i do not usually use just a General Exeption
+            ErrorCode = 3;
+            ErrorMessage = &quot;some really weird error happened, customer not saved&quot;;
+            ret = DBCode.DBNotSaved;
+        }
+        return ret;
+    }
+}
+// *******************************************************************************************
+// Example of how it's used on an asp page.. 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        // Simplifying this a bit, normally, I'd use something like, 
+        // using some sort of static &quot;factory&quot; method
+        // BaseObject.NewBusinessObject(typeof(BLLCustomer)).FillByID(34);
+        BLLCustomer cust = ((BLLCustomer)new BLLCustomer()).FillByID(34);
+        if (cust.ErrorCode != 0)
+        {
+            // There was an error.. Error message is in 
+            //cust.ErrorMessage
+            // some sort of internal error code is in
+            //cust.ErrorCode
+
+            // Give the users some sort of message through and asp:Label.. 
+            // probably based off of cust.ErrorMessage
+            //log can be handled in the data, business layer... or whatever
+            lab.ErrorText = cust.ErrorMessage;
+        }
+        else
+        {
+            // continue using the object, to fill in text boxes, 
+            // literals or whatever. 
+            this.labID = cust.ID.toString();
+            this.labCompName = cust.Name;
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Bottom line, my question is, Am I over complicating things with the muliple layers, and the inherited classes or is my old concept illustrated still working good and stable?  Is there a better way now a days to accomplish these things?  Should I go to just making straight SQL calls from the asp.net page code behind pages as fellow work associate developer suggested (though that last solution makes me feel icky), instead of going through a business object, and data layer (data layer not shown, but basically holds all the stored proc calls). Yeah, another developer did ask me why i go through the effort of layering things, when you can just type what you need straight in a *.aspx.cs code behind page, and then I can have the joys of over 1k lines of code behind. What is some advice here?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/235240/answers" thr:count="6"/>
+       <thr:total>6</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236279/convert-php-function-to-javascript</id>
+       <title type="html">Convert PHP Function to JavaScript</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="php" /><category scheme="http://stackoverflow.com/feeds/tags" term="javascript" />  
+        <author><name>Steve</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236279/convert-php-function-to-javascript" />
+       <published>2008-10-25T11:48:32Z</published>
+       <updated>2008-10-25T13:00:50Z</updated>
+       <summary type="html">&lt;pre&gt;&lt;code&gt;&amp;lt;?php
+function toconv(string)
+{
+
+   $gogo =  array(
+   &quot;a&quot; =&amp;gt; &quot;b&quot;,&quot;cd&quot; =&amp;gt; &quot;e&quot;);
+    $string = str_replace( array_keys( $gogo ),
+                          array_values( $gogo ),
+                          $string);
+    return $string;
+}
+?&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;How can I implement that in JavaScript?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236279/answers" thr:count="2"/>
+       <thr:total>2</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236359/what-is-your-convention-to-distinguish-between-object-methods-to-be-called-by-t</id>
+       <title type="html">What is your convention to distinguish between object methods to be called by the outside, and object methods to be called by a subclass ?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="python" /><category scheme="http://stackoverflow.com/feeds/tags" term="private" /><category scheme="http://stackoverflow.com/feeds/tags" term="subclass" />  
+        <author><name>Thomas Vander Stichele</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236359/what-is-your-convention-to-distinguish-between-object-methods-to-be-called-by-t" />
+       <published>2008-10-25T12:54:37Z</published>
+       <updated>2008-10-25T13:00:26Z</updated>
+       <summary type="html">&lt;p&gt;I know most of the ins and outs of Python's approach to private variables/members/functions/...&lt;/p&gt;
+
+&lt;p&gt;However, I can't make my mind up on how to distinguish between methods for external use or subclassing use.&lt;/p&gt;
+
+&lt;p&gt;Consider the following example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class EventMixin(object):
+    def subscribe(self, **kwargs):
+        '''kwargs should be a dict of event -&amp;gt; callable, to be specialized in the subclass'''
+
+    def event(self, name, *args, **kwargs):
+        ...
+
+    def _somePrivateMethod(self):
+        ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In this example, I want to make it clear that subscribe is a method to be used by external users of the class/object, while event is a method that should not be called from the outside, but rather by subclass implementations.&lt;/p&gt;
+
+&lt;p&gt;Right now, I consider both part of the public API, hence don't use any underscores.  However, for this particular situation, it would feel cleaner to, for example, use no underscores for the external API, one underscore for the subclassable API, and two underscores for the private/internal API.  However, that would become unwieldy because then the internal API would need to be invoked as&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;self._EventMixin__somePrivateMethod()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, what are your conventions, coding-wise, documentationwise, or otherwise ?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236359/answers" thr:count="1"/>
+       <thr:total>1</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/228247/what-are-possiblegood-ways-to-prototype-iphone-applications</id>
+       <title type="html">What are possible/good ways to prototype iPhone applications?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="iphone" /><category scheme="http://stackoverflow.com/feeds/tags" term="prototyping" /><category scheme="http://stackoverflow.com/feeds/tags" term="interactive" /><category scheme="http://stackoverflow.com/feeds/tags" term="mobile" />  
+        <author><name>Ted Johnson</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/228247/what-are-possiblegood-ways-to-prototype-iphone-applications" />
+       <published>2008-10-23T01:49:14Z</published>
+       <updated>2008-10-25T12:59:44Z</updated>
+       <summary type="html">&lt;p&gt;This is intentionally left broad.  If you wanted to show users what iPhone/mobile applications could to for them.  The more interactive the better, but it must be quick to build as you can't code up every idea.  Let us assume real-time games are out of scope.  Throw out ideas or state which approach would be best.&lt;/p&gt;
+
+&lt;p&gt;Here are some of my ideas, what are yours?&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Hack a app that loads mostly web or image content, but has hyperlinks to get around in.  This would mean static data.  &lt;/li&gt;
+&lt;li&gt;Build screens which look great but can only be navigated in a story board type fashion.&lt;/li&gt;
+&lt;li&gt;Load the web version or equivalent on the iPhone and say: now image the buttons and navigation is better.&lt;/li&gt;
+&lt;li&gt;A paper based prototype. &lt;/li&gt;
+&lt;li&gt;Flash or video walk through running on the phone.&lt;/li&gt;
+&lt;li&gt;String existing iPhone apps and web pages together with minimal glue just to convey the idea.  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Can anyone share prototyping methods for other mobile devices?  Ex:  The palm prototype was just a block of wood and note pad that was carried around.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/228247/answers" thr:count="8"/>
+       <thr:total>8</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/232316/silverlight-image-load-url-dynamically</id>
+       <title type="html">Silverlight image: load URL dynamically?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="silverlight-2.0" /><category scheme="http://stackoverflow.com/feeds/tags" term="silverlight" />  
+        <author><name>pearcewg</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/232316/silverlight-image-load-url-dynamically" />
+       <published>2008-10-24T02:37:59Z</published>
+       <updated>2008-10-25T12:57:40Z</updated>
+       <summary type="html">&lt;p&gt;I'm tinkering with Silverlight 2.0.&lt;/p&gt;
+
+&lt;p&gt;I have some images, which I currently have a static URL for the image source.
+Is there a way to dynamically load the image from a URL path for the site that is hosting the control?&lt;/p&gt;
+
+&lt;p&gt;Alternatively, a configuration setting, stored in a single place, that holds the base path for the URL, so that each image only holds the filename?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/232316/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/235326/simplest-safest-way-of-holding-a-bunch-of-const-char-in-a-set</id>
+       <title type="html">Simplest, safest way of holding a bunch of const char* in a set?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="c++" /><category scheme="http://stackoverflow.com/feeds/tags" term="stl" />  
+        <author><name>florin</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/235326/simplest-safest-way-of-holding-a-bunch-of-const-char-in-a-set" />
+       <published>2008-10-24T21:27:41Z</published>
+       <updated>2008-10-25T12:57:22Z</updated>
+       <summary type="html">&lt;p&gt;I want to hold a bunch of const char pointers into an std::set container [1].  std::set template requires a comparator functor, and the standard C++ library offers std::less, but its implementation is based on comparing the two keys directly, which is not standard for pointers.&lt;/p&gt;
+
+&lt;p&gt;I know I can define my own functor and implement the operator() by casting the pointers to integers and comparing them, but is there a cleaner, 'standard' way of doing it?&lt;/p&gt;
+
+&lt;p&gt;Please do not suggest creating std::strings - it is a waste of time and space.  The strings are static, so they can be compared for (in)equality based on their address.&lt;/p&gt;
+
+&lt;p&gt;1: The pointers are to static strings, so there is no problem with their lifetimes - they won't go away.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/235326/answers" thr:count="8"/>
+       <thr:total>8</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236261/how-can-i-automatically-calculate-axis-scale-and-intervals</id>
+       <title type="html">How can I automatically calculate axis scale and intervals?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="scale" /><category scheme="http://stackoverflow.com/feeds/tags" term="tick" /><category scheme="http://stackoverflow.com/feeds/tags" term="calculate" /><category scheme="http://stackoverflow.com/feeds/tags" term="axis" />  
+        <author><name>dan</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236261/how-can-i-automatically-calculate-axis-scale-and-intervals" />
+       <published>2008-10-25T11:32:29Z</published>
+       <updated>2008-10-25T12:56:46Z</updated>
+       <summary type="html">&lt;p&gt;Does anyone know where I can find an algorithm that given a set of values (dates) for an axis I can calculate a reasonable scale and tick interval?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236261/answers" thr:count="1"/>
+       <thr:total>1</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236362/how-to-provide-a-sessionhost-object-for-use-in-both-a-windows-and-web-applicati</id>
+       <title type="html">How to provide a Session/Host object for use in both a windows and web application?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="asp.net" /><category scheme="http://stackoverflow.com/feeds/tags" term="winforms" /><category scheme="http://stackoverflow.com/feeds/tags" term="session" /><category scheme="http://stackoverflow.com/feeds/tags" term="design" /><category scheme="http://stackoverflow.com/feeds/tags" term="multi-tier" />  
+        <author><name>TerryRoquito</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236362/how-to-provide-a-sessionhost-object-for-use-in-both-a-windows-and-web-applicati" />
+       <published>2008-10-25T12:56:41Z</published>
+       <updated>2008-10-25T12:56:41Z</updated>
+       <summary type="html">&lt;p&gt;I have a web application that makes heavy use of the Session state to store information about the current user, their personal settings, record their session history and so on. &lt;/p&gt;
+
+&lt;p&gt;I have found myself retrieving this session information in my business layer, like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;((UserSession)HttpContext.Current.Session[&quot;UserSession&quot;]).User.Info
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This poses a problem - at some point in the future my application will have a Windows client which obviously cannot reference the web Session state. So I need a host or customized session class that I can reference in my business layer that is agnostic of whether the application is running on the web or desktop. Something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;IHost.User.Info
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Behind the scenes, the web implementation will obviously utilize the Session state to store information, but I need to hide this away from my business layer. Has anyone solved this problem or got any practival advice on how best to approach this?&lt;/p&gt;
+
+&lt;p&gt;Help appreciated. &lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236362/answers" thr:count="0"/>
+       <thr:total>0</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236335/am-i-retarded-or-does-c-suck-at-maths-factorial-question</id>
+       <title type="html">Am I Retarded or Does C++ Suck At Maths? (Factorial Question)</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="c++" /><category scheme="http://stackoverflow.com/feeds/tags" term="factorial" /><category scheme="http://stackoverflow.com/feeds/tags" term="signed" /><category scheme="http://stackoverflow.com/feeds/tags" term="maxint" />  
+        <author><name>Peter</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236335/am-i-retarded-or-does-c-suck-at-maths-factorial-question" />
+       <published>2008-10-25T12:38:28Z</published>
+       <updated>2008-10-25T12:55:24Z</updated>
+       <summary type="html">&lt;p&gt;So, simple procedure, calculate a factorial number. Code is as follows.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int calcFactorial(int num)
+{
+    int total = 1;
+
+    if (num == 0)
+    {
+	    return 0;
+    }
+
+    for (num; num &amp;gt; 0; num--)
+    {
+	    total *= num;
+    }
+
+    return total;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, this works fine and dandy (There are certainly quicker and more elegant solutions, but this works for me) for most numbers. However when inputting larger numbers such as 250 it, to put it bluntly, craps out. Now, the first couple factorial &quot;bits&quot; for 250 are { 250, 62250, 15126750, 15438000, 3813186000 } for reference.&lt;/p&gt;
+
+&lt;p&gt;My code spits out { 250, 62250, 15126750, 15438000, &lt;strong&gt;-481781296&lt;/strong&gt; } which is obviously, uh, off. My first suspicion was perhaps that I had breached the limit of a 32 bit integer, but given that 2^32 is 4294967296 I don't think so. The only thing I can think of is perhaps that it breaches a &lt;strong&gt;signed&lt;/strong&gt; 32-bit limit, but shouldn't it be able to think about this sort of thing? If being signed is the problem I can solve this by making the integer unsigned but this would only be a temporary solution, as the next iteration yields 938043756000 which is far above the 4294967296 limit.&lt;/p&gt;
+
+&lt;p&gt;So, is my problem the signed limit? If so, what can I do to calculate large numbers (Though I've a &quot;LargeInteger&quot; class I made a while ago that may be suited!) without coming across this problem again?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236335/answers" thr:count="7"/>
+       <thr:total>7</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/227973/rails-testing-fixtures-factories-and-magic-numbers</id>
+       <title type="html">Rails Testing: Fixtures, Factories, and Magic numbers</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="rails" /><category scheme="http://stackoverflow.com/feeds/tags" term="unit-testing" /><category scheme="http://stackoverflow.com/feeds/tags" term="yaml" /><category scheme="http://stackoverflow.com/feeds/tags" term="best-practices" /><category scheme="http://stackoverflow.com/feeds/tags" term="testing" />  
+        <author><name>Daniel Beardsley</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/227973/rails-testing-fixtures-factories-and-magic-numbers" />
+       <published>2008-10-22T23:58:42Z</published>
+       <updated>2008-10-25T12:55:20Z</updated>
+       <summary type="html">&lt;p&gt;I've got an application that needs quite a bit of data (1000's of records) to do appropriate testing.  The only way I've found to get a decent set of testable, sensible data is to use a &lt;strong&gt;subset of my production DB&lt;/strong&gt;.  I've converted this to YAML fixtures in the normal `test/fixtures' location.&lt;/p&gt;
+
+&lt;p&gt;This works, but now I have a bunch of seemingly brittle tests and assertions that depend on their being a particular number of records that meet condition X...&lt;/p&gt;
+
+&lt;p&gt;example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def test_children_association
+  p = Parent.find(1)
+  assert_equal 18, p.children.count, &quot;Parent.children isn't providing the right records&quot;
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This doesn't seem like a good idea to me, but &lt;strong&gt;I'm not sure if there is a better / accepted  way&lt;/strong&gt; to test an application that needs a large hierarchy of data.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/227973/answers" thr:count="4"/>
+       <thr:total>4</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236283/problem-with-ajaxrequest-using-json-and-prototype</id>
+       <title type="html">problem with Ajax.Request using JSon and Prototype.</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="json" /><category scheme="http://stackoverflow.com/feeds/tags" term="prototype" />  
+        <author><name>Badmate</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236283/problem-with-ajaxrequest-using-json-and-prototype" />
+       <published>2008-10-25T11:53:58Z</published>
+       <updated>2008-10-25T12:55:19Z</updated>
+       <summary type="html">&lt;p&gt;I am using the following function to load a PlayList of Songs from 'PlayListJSON.aspx' but somethings seems wrong,evrytime OnFailure is getting called, I am unable to debug it further. any help would be really gr8.&lt;/p&gt;
+
+&lt;p&gt;Player.prototype.loadPlaylist = function (playlistId, play) 
+   {    	&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    req = new Ajax.Request('/PlaylistJSON.aspx?id=' + playlistId, 
+        { 
+
+            method: 'GET',    
+            onSuccess: function(transport,json) {                                                                                    
+
+                eval(transport.responseText);                              
+
+                player.setPlaylist(playlist.tracklist,playlist.title, playlistId);
+                player.firstTrack();
+
+                if (play)
+                    player.playSong();  
+
+             },
+             onFailure: function() {
+               //error
+
+             }
+         });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236283/answers" thr:count="2"/>
+       <thr:total>2</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236348/documentation-writing-style</id>
+       <title type="html">Documentation - writing style</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="documentation" /><category scheme="http://stackoverflow.com/feeds/tags" term="writing-style" />  
+        <author><name>endian</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236348/documentation-writing-style" />
+       <published>2008-10-25T12:47:06Z</published>
+       <updated>2008-10-25T12:54:12Z</updated>
+       <summary type="html">&lt;p&gt;I am currently documenting our development process, and more importantly the reasons &lt;em&gt;why&lt;/em&gt; we do it a particular way.  I am planning to write in the style that I used during my (physics) degree, and which is common in many mathematics and physics textbooks, which is along the following lines:&lt;/p&gt;
+
+&lt;p&gt;&quot;Therefore, we now see that X is Y, because of Z&quot;&lt;/p&gt;
+
+&lt;p&gt;&quot;We can state that F(x)...&quot;&lt;/p&gt;
+
+&lt;p&gt;This style is very natural to me, but it has raised some discussion and I would like to know whether there is theoretical basis to the way I plan to write.  The name of the style, if it has one, and/or a link to a Wikipedia page should be enough to silence the doubters!&lt;/p&gt;
+
+&lt;p&gt;Thanks in advance.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236348/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236357/developing-applications-for-nokia-5310</id>
+       <title type="html">Developing applications for Nokia 5310</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="nokia" /><category scheme="http://stackoverflow.com/feeds/tags" term="5310" /><category scheme="http://stackoverflow.com/feeds/tags" term="j2me" /><category scheme="http://stackoverflow.com/feeds/tags" term="sms" />  
+        <author><name>Alan</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236357/developing-applications-for-nokia-5310" />
+       <published>2008-10-25T12:53:24Z</published>
+       <updated>2008-10-25T12:53:24Z</updated>
+       <summary type="html">&lt;p&gt;If developing an application for use with a Nokia 5310 - what is the best approach to capturing text input in the native SMS composer? Is this at all possible? Are there work-arounds? Is it possible to override native functions? &lt;/p&gt;
+
+&lt;p&gt;Thanks,&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236357/answers" thr:count="0"/>
+       <thr:total>0</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/235418/aggregate-adjacent-only-records-with-t-sql</id>
+       <title type="html">Aggregate adjacent only records with T-SQL</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="transact-sql" /><category scheme="http://stackoverflow.com/feeds/tags" term="aggregate" /><category scheme="http://stackoverflow.com/feeds/tags" term="sql" /><category scheme="http://stackoverflow.com/feeds/tags" term="temporal-database" />  
+        <author><name>Peter M</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/235418/aggregate-adjacent-only-records-with-t-sql" />
+       <published>2008-10-24T22:08:01Z</published>
+       <updated>2008-10-25T12:52:51Z</updated>
+       <summary type="html">&lt;p&gt;Hi,
+I have (simplified for the example) a table with the following data&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Row Start       Finish       ID  Amount
+--- ---------   ----------   --  ------
+  1 2008-10-01  2008-10-02   01      10
+  2 2008-10-02  2008-10-03   02      20
+  3 2008-10-03  2008-10-04   01      38
+  4 2008-10-04  2008-10-05   01      23
+  5 2008-10-05  2008-10-06   03      14
+  6 2008-10-06  2008-10-07   02       3
+  7 2008-10-07  2008-10-08   02       8
+  8 2008-10-08  2008-11-08   03      19
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The dates represent a period in time, the ID is the state a system was in during that period and the amount is a value related to that state.&lt;/p&gt;
+
+&lt;p&gt;What I want to do is to aggregate the Amounts for &lt;em&gt;adjacent&lt;/em&gt; rows with the &lt;em&gt;same&lt;/em&gt; ID number, but keep the same overall sequence so that contiguous runs can be combined.  Thus I want to end up with data like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Row Start       Finish       ID  Amount
+--- ---------   ----------   --  ------
+  1 2008-10-01  2008-10-02   01      10
+  2 2008-10-02  2008-10-03   02      20
+  3 2008-10-03  2008-10-05   01      61
+  4 2008-10-05  2008-10-06   03      14
+  5 2008-10-06  2008-10-08   02      11
+  6 2008-10-08  2008-11-08   03      19
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I am after a T-SQL solution that can be put into a SP, however I can't see how to do that with simple queries.  I suspect that it may require iteration of some sort but I don't want to go down that path.&lt;/p&gt;
+
+&lt;p&gt;The reason I want to do this aggregation is that the next step in the process is to do a SUM() and Count() grouped by the unique ID's that occur within the sequence, so that my final data will look something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ID  Counts Total
+--  ------ -----
+01       2    71
+02       2    31
+03       2    33
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However if I do a simple &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;SELECT COUNT(ID), SUM(Amount) FROM data GROUP BY ID
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On the original table I get something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ID  Counts Total
+--  ------ -----
+01       3    71
+02       3    31
+03       2    33
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which is not what I want.&lt;/p&gt;
+
+&lt;p&gt;Thanks for any help.
+Peter&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/235418/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236231/how-do-i-choose-a-multicast-address-for-my-applications-use</id>
+       <title type="html">How do I choose a multicast address for my application's use?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="networking" /><category scheme="http://stackoverflow.com/feeds/tags" term="ipv4" /><category scheme="http://stackoverflow.com/feeds/tags" term="udp" /><category scheme="http://stackoverflow.com/feeds/tags" term="multicast" />  
+        <author><name>MarkR</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236231/how-do-i-choose-a-multicast-address-for-my-applications-use" />
+       <published>2008-10-25T10:57:05Z</published>
+       <updated>2008-10-25T12:51:47Z</updated>
+       <summary type="html">&lt;p&gt;Hi, &lt;/p&gt;
+
+&lt;p&gt;How should I choose an IPv4 multicast address for my application's use? I may need more than one (a whole range perhaps ultimately) but just want to avoid conflicts with other applications.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Packets will be entirely contained within an administrative domain, probably a LAN&lt;/li&gt;
+&lt;li&gt;If several independent instances of my application are in use on the same network, they could each use their own multicast address - but if they don't, they will be able to coexist anyway, they'll just have a small amount of overhead ignoring each others' packets.&lt;/li&gt;
+&lt;li&gt;My packets already contain a &quot;magic number&quot; to avoid problems&lt;/li&gt;
+&lt;li&gt;I will be checking the originator address (which I know can be spoofed of course), TTL and other things to try to prevent unexpected packets mucking things up.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Ideas please :)&lt;/p&gt;
+
+&lt;p&gt;Currently I've just allocated an arbitrary one from the &quot;local use&quot; space, 239.255.42.99&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236231/answers" thr:count="2"/>
+       <thr:total>2</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236349/aspnet-mvc-handling-bad-url-parameters</id>
+       <title type="html">ASP.Net MVC - handling bad URL parameters</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="asp.net-mvc" /><category scheme="http://stackoverflow.com/feeds/tags" term="url" /><category scheme="http://stackoverflow.com/feeds/tags" term="error-handling" />  
+        <author><name>Andrew</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236349/aspnet-mvc-handling-bad-url-parameters" />
+       <published>2008-10-25T12:47:20Z</published>
+       <updated>2008-10-25T12:50:55Z</updated>
+       <summary type="html">&lt;p&gt;What's the best way to handle a visitor constructing their own URL and replacing what we expect to be an ID with anything they like?&lt;/p&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://stackoverflow.com/questions/236349&quot; rel=&quot;nofollow&quot;&gt;http://stackoverflow.com/questions/236349&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;But the user could just as easily replace the URL with:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://stackoverflow.com/questions/foo&quot; rel=&quot;nofollow&quot;&gt;http://stackoverflow.com/questions/foo&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I've thought of making every Controller Function parameter a &lt;code&gt;String&lt;/code&gt;, and using &lt;code&gt;Integer.TryParse()&lt;/code&gt; on them - if that passes then I have an ID and can continue, otherwise I can redirect the user to an Unknown / not-found or index View.&lt;/p&gt;
+
+&lt;p&gt;Stack Overflow handles it nicely, and I'd like to too - how do you do it, or what would you suggest?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236349/answers" thr:count="1"/>
+       <thr:total>1</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/235284/why-do-browsers-not-have-a-file-upload-progress-bar</id>
+       <title type="html">Why do browsers not have a file upload progress bar?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="browser" /><category scheme="http://stackoverflow.com/feeds/tags" term="upload" /><category scheme="http://stackoverflow.com/feeds/tags" term="http" /><category scheme="http://stackoverflow.com/feeds/tags" term="web" /><category scheme="http://stackoverflow.com/feeds/tags" term="web-development" />  
+        <author><name>Egon</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/235284/why-do-browsers-not-have-a-file-upload-progress-bar" />
+       <published>2008-10-24T21:15:46Z</published>
+       <updated>2008-10-25T12:48:53Z</updated>
+       <summary type="html">&lt;p&gt;I wonder why no browser out there has such simple but essential feature. Am I missing something? Is there a technical reason?&lt;/p&gt;
+
+&lt;p&gt;I'm tired of all those javascript/flash/java hacks out there ...&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/235284/answers" thr:count="6"/>
+       <thr:total>6</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236323/which-is-the-best-way-to-compare-the-integer-part-of-two-non-integer-numbers</id>
+       <title type="html">Which is the best way to compare the integer part of two non-integer numbers?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term=".net" /><category scheme="http://stackoverflow.com/feeds/tags" term="compare" /><category scheme="http://stackoverflow.com/feeds/tags" term="double" /><category scheme="http://stackoverflow.com/feeds/tags" term="integer" />  
+        <author><name>Trap</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236323/which-is-the-best-way-to-compare-the-integer-part-of-two-non-integer-numbers" />
+       <published>2008-10-25T12:30:33Z</published>
+       <updated>2008-10-25T12:48:19Z</updated>
+       <summary type="html">&lt;p&gt;I need to compare the integer part of two doubles for inequality and I'm currently doing this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int iA = (int)dA;
+int iB = (int)dB;
+
+if( iA != iB )
+{
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;but I wonder if there's a better approach than this.&lt;/p&gt;
+
+&lt;p&gt;Thanks.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236323/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/228441/how-do-i-log-the-entire-trace-back-of-a-ruby-exception-using-the-default-rails</id>
+       <title type="html">How do I log the entire trace back of a Ruby exception using the default Rails logger?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="logging" /><category scheme="http://stackoverflow.com/feeds/tags" term="ruby" /><category scheme="http://stackoverflow.com/feeds/tags" term="rails" />  
+        <author><name>Josh Moore</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/228441/how-do-i-log-the-entire-trace-back-of-a-ruby-exception-using-the-default-rails" />
+       <published>2008-10-23T03:31:34Z</published>
+       <updated>2008-10-25T12:47:35Z</updated>
+       <summary type="html">&lt;p&gt;I am working on rails project and I am trying to get exceptions to be logged to the rails log files.  I know I can call &lt;code&gt;logger.error $!&lt;/code&gt; to get the first line of the exception logged to the file.  But, I want to get the entire trace stack logged as well.  How do I log the entire trace back of an exception using the default rails logger?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/228441/answers" thr:count="2"/>
+       <thr:total>2</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236322/how-to-make-icon-with-pink-background-transparent</id>
+       <title type="html">How to make icon with pink background transparent?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="image-manipulation" /><category scheme="http://stackoverflow.com/feeds/tags" term="images" /><category scheme="http://stackoverflow.com/feeds/tags" term="icons" />  
+        <author><name>Name</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236322/how-to-make-icon-with-pink-background-transparent" />
+       <published>2008-10-25T12:29:08Z</published>
+       <updated>2008-10-25T12:46:49Z</updated>
+       <summary type="html">&lt;p&gt;I'm using Visual Studio icon library (VS2008ImageLibrary), there are some BMP files with a pink background. How can I make the pink background become transparent? What software can I use to do this? Any free one? &lt;/p&gt;
+
+&lt;p&gt;Thanks&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236322/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236346/net-library-or-aspnet-application-for-amazon-s3</id>
+       <title type="html">.NET library or asp.net application for Amazon S3</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="amazon-s3" /><category scheme="http://stackoverflow.com/feeds/tags" term="asp.net" />  
+        <author><name>jpkeisala</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236346/net-library-or-aspnet-application-for-amazon-s3" />
+       <published>2008-10-25T12:46:33Z</published>
+       <updated>2008-10-25T12:46:33Z</updated>
+       <summary type="html">&lt;p&gt;I want to have a web based admin to upload, delete files and folders in Amazon S3 on ASP.NET website. &lt;br/&gt;
+I am pretty sure something like this already exist, has anyone seen it? &lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236346/answers" thr:count="0"/>
+       <thr:total>0</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/235965/why-is-it-that-people-write-free-software-such-as-openoffice-spybot-etc</id>
+       <title type="html">why is it that people write free software, such as openoffice, spybot etc?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="free" /><category scheme="http://stackoverflow.com/feeds/tags" term="software" /><category scheme="http://stackoverflow.com/feeds/tags" term="open-source" /><category scheme="http://stackoverflow.com/feeds/tags" term="free-software" />  
+        <author><name>Marin</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/235965/why-is-it-that-people-write-free-software-such-as-openoffice-spybot-etc" />
+       <published>2008-10-25T05:42:57Z</published>
+       <updated>2008-10-25T12:46:19Z</updated>
+       <summary type="html">&lt;p&gt;why is it that people write free software, such as openoffice, spybot etc?&lt;/p&gt;
+
+&lt;p&gt;Thank you for taking the time.  &lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/235965/answers" thr:count="13"/>
+       <thr:total>13</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/236236/rows-in-their-own-columns-depending-on-their-value</id>
+       <title type="html">Rows in their own columns depending on their value</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="sql" /><category scheme="http://stackoverflow.com/feeds/tags" term="query" /><category scheme="http://stackoverflow.com/feeds/tags" term="select" /><category scheme="http://stackoverflow.com/feeds/tags" term="row" /><category scheme="http://stackoverflow.com/feeds/tags" term="columns" />  
+        <author><name>Paul</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/236236/rows-in-their-own-columns-depending-on-their-value" />
+       <published>2008-10-25T11:01:23Z</published>
+       <updated>2008-10-25T12:44:23Z</updated>
+       <summary type="html">&lt;p&gt;I have a select query that currently produces the following results:
+&lt;BR&gt;
+Description &amp;nbsp;  Code  &amp;nbsp;  Price&lt;BR&gt;
+Product 1  &amp;nbsp; &amp;nbsp;  &amp;nbsp;    A  &amp;nbsp;  &amp;nbsp;   &amp;nbsp;   5&lt;BR&gt;
+Product 1  &amp;nbsp; &amp;nbsp;   &amp;nbsp;   B    &amp;nbsp;  &amp;nbsp;  &amp;nbsp;  4&lt;BR&gt;
+Product 1  &amp;nbsp; &amp;nbsp;  &amp;nbsp;   C    &amp;nbsp;  &amp;nbsp; &amp;nbsp;   2&lt;BR&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the following query:&lt;BR&gt;
+SELECT DISTINCT np.Description, p.promotionalCode, p.Price
+FROM            Price AS p INNER JOIN
+                         nProduct AS np ON p.nProduct = np.Id&lt;/p&gt;
+
+&lt;p&gt;I want to produce the following: &lt;br&gt;
+Description &amp;nbsp;  A&amp;nbsp; B &amp;nbsp; C&lt;BR&gt;
+Product 1  &amp;nbsp;  &amp;nbsp;    5  &amp;nbsp;  4 &amp;nbsp;   2&lt;BR&gt;&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/236236/answers" thr:count="3"/>
+       <thr:total>3</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/196845/searching-for-a-safe-way-to-do-authentication-from-a-mobile-app</id>
+       <title type="html">Searching for a safe way to do authentication from a mobile app</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="security" /><category scheme="http://stackoverflow.com/feeds/tags" term="java" /><category scheme="http://stackoverflow.com/feeds/tags" term="mobile" />  
+        <author><name></name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/196845/searching-for-a-safe-way-to-do-authentication-from-a-mobile-app" />
+       <published>2008-10-13T06:30:01Z</published>
+       <updated>2008-10-25T12:44:12Z</updated>
+       <summary type="html">&lt;p&gt;I've inherited a mobile app which sends auth credentials (userid/password) in the clear.&lt;/p&gt;
+
+&lt;p&gt;I'd imagine that I have 2 choices:
+a) use TLS.
+b) write my own auth protocol.&lt;/p&gt;
+
+&lt;p&gt;If I choose (b) what are the key guidelines that I must follow to make it it secure.
+e.g. how to avoid replay attacks, encryption strategies. Thanks&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/196845/answers" thr:count="4"/>
+       <thr:total>4</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/80622/maven-or-ant</id>
+       <title type="html">Maven or Ant?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="subjective" /><category scheme="http://stackoverflow.com/feeds/tags" term="discussion" /><category scheme="http://stackoverflow.com/feeds/tags" term="ant" /><category scheme="http://stackoverflow.com/feeds/tags" term="maven" /><category scheme="http://stackoverflow.com/feeds/tags" term="argumentative" />  
+        <author><name>Steve</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/80622/maven-or-ant" />
+       <published>2008-09-17T06:52:31Z</published>
+       <updated>2008-10-25T12:43:50Z</updated>
+       <summary type="html">&lt;p&gt;Back up your claim with some actual benefits.&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/80622/answers" thr:count="7"/>
+       <thr:total>7</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/148305/best-way-to-manage-configuration-data</id>
+       <title type="html">Best Way to Manage Configuration Data</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="database-design" /><category scheme="http://stackoverflow.com/feeds/tags" term="configuration" /><category scheme="http://stackoverflow.com/feeds/tags" term="saas" />  
+        <author><name>Sarcastic</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/148305/best-way-to-manage-configuration-data" />
+       <published>2008-09-29T11:24:09Z</published>
+       <updated>2008-10-25T12:43:38Z</updated>
+       <summary type="html">&lt;p&gt;I'm working on a SaaS application where each customer will have different configurations depending on the edition they have purchased, additional features they have purchased, etc. For example, a customer might have a limit of 3 custom reports.&lt;/p&gt;
+
+&lt;p&gt;Obviously I want to store this configuration in the database, but I am unsure of the best approach. We want to be able to add additional features in the future without requiring a change to the database schema, so a single table with a column per configuration option isn't sensible.&lt;/p&gt;
+
+&lt;p&gt;Possible options are a table with one entry per customer, with an XML field containing the entire configuration for that customer, but that adds complexity when the XML schema changes to add additional features.&lt;/p&gt;
+
+&lt;p&gt;We could use a table with key value pairs, and store all configuration settings as strings and then parse to the correct data type, but that seems a bit of a cludge, as does having a seperate table for string config options, integer config options, etc.&lt;/p&gt;
+
+&lt;p&gt;Is there a good pattern for this type of scenario which people are using?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/148305/answers" thr:count="4"/>
+       <thr:total>4</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/204653/when-should-a-web-service-not-be-used</id>
+       <title type="html">When should a web service not be used?</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="web-services" /><category scheme="http://stackoverflow.com/feeds/tags" term="web-applications" /><category scheme="http://stackoverflow.com/feeds/tags" term="webservice" /><category scheme="http://stackoverflow.com/feeds/tags" term="asp.net" /><category scheme="http://stackoverflow.com/feeds/tags" term="architecture" />  
+        <author><name></name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/204653/when-should-a-web-service-not-be-used" />
+       <published>2008-10-15T13:14:01Z</published>
+       <updated>2008-10-25T12:43:16Z</updated>
+       <summary type="html">&lt;p&gt;Using a web service is often an excellent architectural approach. And, with the advent of WCF in .Net, it's getting even better.&lt;/p&gt;
+
+&lt;p&gt;But, in my experience, some people seem to think that web services should always be used in the data access layer for calls to the database. I don't think that web services are the universal solution.&lt;/p&gt;
+
+&lt;p&gt;I am thinking of smaller intranet applications with a few dozen users. The web app and its web service are deployed to one web server, not a web farm. There isn't going to be another web app in the future that can use this particular web service. It seems to me that the cost of calling the web service unnecessarily increases the burden on the web server. There is a performance hit to inter-process calls. Maintaining and debugging the code for the web app and the web service is more complicated. So is deployment. I just don't see the advantages of using a web service here.&lt;/p&gt;
+
+&lt;p&gt;One could test this by creating two versions of the web app, with and without the web service, and do stress testing, but I haven't done it.&lt;/p&gt;
+
+&lt;p&gt;Do you have an opinion on using web services for small-scale web app's? Any other occasions when web services are not a good architectural choice?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/204653/answers" thr:count="7"/>
+       <thr:total>7</thr:total>
+     </entry>
+    
+     <entry>
+        <id>http://stackoverflow.com/questions/201101/how-to-initialize-an-array-in-c</id>
+       <title type="html">How to initialize an array in c</title>
+       <category scheme="http://stackoverflow.com/feeds/tags" term="c" /><category scheme="http://stackoverflow.com/feeds/tags" term="arrays" /><category scheme="http://stackoverflow.com/feeds/tags" term="initialization" /><category scheme="http://stackoverflow.com/feeds/tags" term="array-initialize" />  
+        <author><name>Matt</name></author>
+       <link rel="alternate" href="http://stackoverflow.com/questions/201101/how-to-initialize-an-array-in-c" />
+       <published>2008-10-14T13:13:40Z</published>
+       <updated>2008-10-25T12:43:00Z</updated>
+       <summary type="html">&lt;p&gt;I have a large array in C (not C++ if that makes a difference). I want to initialize all members to the same value. I could swear I once knew a simple way to do this. I could use memset() in my case, but isn't there a way to do this built right into the c syntax?&lt;/p&gt;
+</summary>
+       <link rel="replies" type="application/atom+xml" href="http://stackoverflow.com/feeds/question/201101/answers" thr:count="9"/>
+       <thr:total>9</thr:total>
+     </entry>
+    
+ 
+</feed>

@@ -1,0 +1,96 @@
+body {
+    font-family: Verdana;
+    margin: 0;
+}
+
+#head h1, #content h2 {
+    margin-top: 0;
+}
+
+#head {
+    background: url(graphics/head-backback.png) repeat-x;
+    color:#A67B5B;
+    height:215px;
+}
+
+#head .text {
+    background: transparent url(graphics/head-background.png) no-repeat 50% 0%;
+    height: 100%;
+    width: 100%;
+}
+
+#head .text h1 {
+    margin: 0 auto;
+    width: 600px;
+    font: italic normal normal 36pt/215px Palatino, Times New Roman, serif;
+}
+
+#content {
+    background: #BC7B57;
+}
+
+#swoosh {
+    background: #BC7B57 url(graphics/body-background.png) no-repeat 50% 0%;
+    width: 100%;
+    height: 75px;
+    position: absolute;
+    z-index: 99;
+}
+
+#guide-menu {
+}
+
+#content .text {
+    position: relative;
+    padding: 1em 0;
+    z-index: 100;
+}
+
+div.text {
+    width: 600px;
+    margin: 0 auto;
+}
+
+p {
+    text-align: justify;
+}
+
+.source-code {
+    border: 1px solid black;
+    font-family: Consolas, Courier New;
+    font-size: 0.9em;
+}
+
+pre {
+    padding: 0.2em;
+}
+
+#switch-buttons {
+    list-style: none;
+    height: 2em;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#switch-buttons li {
+    display: block;
+    float: left;
+    margin: 0.2em 0.4em 0.2em 0;
+    padding: 0;
+    width: 7em;
+}
+
+#switch-buttons li a {
+    background: white;
+    display: block;
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+}
+
+#switch-buttons li a.active {
+    background: black;
+}
