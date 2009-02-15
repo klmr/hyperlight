@@ -1,4 +1,4 @@
-<?php require 'path/to/hyperlight.php'; ?>
+<?php require('path/to/hyperlight.php'); ?>
 <html>
     <head>
         <title>Very simple test for Hyperlight</title>

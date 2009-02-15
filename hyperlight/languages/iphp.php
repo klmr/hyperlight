@@ -1,6 +1,6 @@
 <?php
 
-require_once 'php.php';
+require_once('php.php');
 
 class IphpLanguage extends PhpLanguage {
     public function __construct() {

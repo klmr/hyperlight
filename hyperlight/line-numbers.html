@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>This is a test</title>
+        <style type="text/css">
+        pre {
+            font-family: Courier New;
+            font-size: 1em;
+            line-height: 1.25em;
+        }
+
+        .line-numbers {
+            color: gray;
+            float: left;
+            width: 0;
+            margin: 0;
+            list-style-type: decimal;
+        }
+
+        .line-numbers li {
+            margin: 0;
+            padding: 0;
+            font-size: 0.6em;
+            font-family: Georgia;
+        }
+
+        .line-numbers li div {
+            font-family: Courier New;
+            font-size: 1.6666em;
+            line-height: 1.25em;
+        }
+
+        .line-numbers.hidden { visibility: hidden; }
+        </style>
+        <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+        <script type="text/javascript">
+            $().ready(function () {
+                $('.line-numbers').addClass('hidden');
+                $('.source-code').hover(function () {
+                    $(this).prev().removeClass('hidden');
+                },
+                function() {
+                    $(this).prev().addClass('hidden');
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <h1>Test with line numbers</h1>
+
+        <ol class="line-numbers">
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        <li><div>&nbsp;</div></li>
+        </ol>
+        <pre class="source-code">
+template &lt;typename T, typename BinaryOperator&gt;
+__global__ void dev_vector_op(T* a, T* b, T* out, unsigned int len) {
+    unsigned int const idx = blockDim.x * blockIdx.x + threadIdx.x;
+    BinaryOperator op;
+    out[idx] = op(a[idx], b[idx]);
+}
+
+template &lt;typename T, typename BinOp&gt;
+__global__ void dev_reduce_block(T* gdata, T* result, unsigned int const len) {
+    extern __shared__ T sdata[];
+    unsigned int const offset = threadIdx.x;
+    BinOp const op;
+
+    sdata[2 * offset] = gdata[2 * offset];
+    sdata[2 * offset + 1] = gdata[2 * offset + 1];
+
+#define IDX(x) ((x) + 2 * offset) * d - 1
+
+    for (unsigned int d = 1; d &lt;= len / 2; d *= 2) {
+        __syncthreads();
+        unsigned int const ai = IDX(1);
+        if (ai &gt;= len) continue;
+        unsigned int const bi = IDX(2);
+        sdata[bi] = op(sdata[ai], sdata[bi]);
+    }
+
+#undef IDX
+    
+    __syncthreads();
+    if (threadIdx.x == 0)
+        *result = sdata[len - 1];
+}
+</pre>
+    </body>
+</html>

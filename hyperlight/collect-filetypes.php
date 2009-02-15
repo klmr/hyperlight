@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-require 'hyperlight.php';
+require('hyperlight.php');
 
 // Parse the languages/ subdirectory and compile a filetypes list that is
 // considered by `hyperlight_file` to automatically recognize filetypes.

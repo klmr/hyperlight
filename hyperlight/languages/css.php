@@ -4,7 +4,7 @@ class CssLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'CSS',
-            parent::VERSION => '0.7',
+            parent::VERSION => '0.8',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -36,7 +36,8 @@ class CssLanguage extends HyperLanguage {
             'meta' => "/@$nmstart$nmchar*/i",
             'id' => "/#$nmstart$nmchar*/i",
             'class' => "/\.$nmstart$nmchar*/",
-            'pseudoclass' => "/:$nmstart$nmchar*/",
+            // Pay attention not to match rules such as ::selection!
+            'pseudoclass' => "/(?<!:):$nmstart$nmchar*/",
             'element' => "/$nmstart$nmchar*/i",
             'block' => new Rule('/\{/', '/\}/'),
             'constraint' => new Rule('/\[/', '/\]/'),
@@ -45,14 +46,14 @@ class CssLanguage extends HyperLanguage {
             'identifier' => "/$nmstart$nmchar*/i",
             'string' => "/$string/$strmod",
             'color' => "/#$hex{3}(?:$hex{3})?/i",
-            'important' => '/!important/',
+            'important' => '/!\s*important/',
         ));
 
         $this->addMappings(array(
             'element' => 'keyword',
             'id' => 'keyword type',
-            'class' => 'keyword literal',
-            'pseudoclass' => 'keyword operator',
+            'class' => 'keyword builtin',
+            'pseudoclass' => 'preprocessor',
             'block' => '',
             'constraint' => '',
             'value' => '',
