@@ -4,7 +4,7 @@ class VbLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'VB',
-            parent::VERSION => '1.1',
+            parent::VERSION => '1.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -31,7 +31,19 @@ class VbLanguage extends HyperLanguage {
 
         $this->addRules(array(
             'string' => new Rule('/"/', '/"c?/i'),
-            'number' => '/(?:&[HO])?\d+(?:\.\d*)?(?:e[+-]?\d+)?U?[SILDFR%@!#&]?|\.\d+[FR!#]?/',
+            'number' => '/(?: # Integer followed by optional fractional part.
+                (?:&(?:H[0-9a-f]+|O[0-7]+)|\d+)
+                (?:\.\d*)?
+                (?:e[+-]\d+)?
+                U?[SILDFR%@!#&]?
+            )
+            |
+            (?: # Just the fractional part.
+                (?:\.\d+)
+                (?:e[+-]\d+)?
+                [FR!#]?
+            )
+            /ix',
             'escaped' => '/""/',
             'keyword' => array(
                 array(
@@ -87,4 +99,3 @@ class VbLanguage extends HyperLanguage {
 }
 
 ?>
-

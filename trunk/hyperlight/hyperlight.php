@@ -37,17 +37,16 @@
  *   in the `emit*` methods. This should never happen anyway. Probably something
  *   to do with the zero-width lookahead in the PHP syntax definition.
  *
- * - `hyperlight_file`: automatically recognize file type from extension
- *
  * - `hyperlight_calculate_fold_marks`: refactor, write proper handler
  *
  * - Line numbers (on client-side?)
  *
  */
 
-require_once 'preg_helper.php';
+require_once('preg_helper.php');
 
 if (!function_exists('array_peek')) {
+    /** This does exactly what you think it does. */
     function array_peek(array &$array) {
         $cnt = count($array);
         return $cnt === 0 ? null : $array[$cnt - 1];
@@ -115,7 +114,7 @@ class Rule {
         )
         |
         (?: # Just the fractional part.
-            (?:\.\d*)
+            (?:\.\d+)
             (?:e[+-]\d+)?
         )
         /ix';
@@ -197,7 +196,7 @@ abstract class HyperLanguage {
 
     protected static function fromName($lang) {
         if (!isset(self::$_languageCache[$lang])) {
-            require_once "languages/$lang.php";
+            require_once("languages/$lang.php");
             $klass = ucfirst("{$lang}Language");
             self::$_languageCache[$lang] = new $klass();
         }
@@ -347,6 +346,7 @@ abstract class HyperLanguage {
 
     private function makeCompiledLanguage() {
         return new HyperlightCompiledLanguage(
+            $this->id(),
             $this->_info,
             $this->_extensions,
             $this->_states,
@@ -374,6 +374,7 @@ abstract class HyperLanguage {
 }
 
 class HyperlightCompiledLanguage {
+    private $_id;
     private $_info;
     private $_extensions;
     private $_states;
@@ -382,7 +383,8 @@ class HyperlightCompiledLanguage {
     private $_caseInsensitive;
     private $_postProcessors = array();
 
-    public function __construct($info, $extensions, $states, $rules, $mappings, $caseInsensitive, $postProcessors) {
+    public function __construct($id, $info, $extensions, $states, $rules, $mappings, $caseInsensitive, $postProcessors) {
+        $this->_id = $id;
         $this->_info = $info;
         $this->_extensions = $extensions;
         $this->_caseInsensitive = $caseInsensitive;
@@ -392,6 +394,10 @@ class HyperlightCompiledLanguage {
 
         foreach ($postProcessors as $ppkey => $ppvalue)
             $this->_postProcessors[$ppkey] = HyperLanguage::compile($ppvalue);
+    }
+
+    public function id() {
+        return $this->_id;
     }
 
     public function name() {
@@ -607,7 +613,7 @@ class Hyperlight {
     public function render($code) {
         // Normalize line breaks.
         $this->_code = preg_replace('/\r\n?/', "\n", $code);
-        $fm = hyperlight_calculate_fold_marks($this->_code, 'vb');
+        $fm = hyperlight_calculate_fold_marks($this->_code, $this->language()->id());
         return hyperlight_apply_fold_marks($this->renderCode(), $fm);
     }
 
@@ -884,10 +890,24 @@ if (defined('HYPERLIGHT_SHORTCUT')) {
 }
 
 function hyperlight_calculate_fold_marks($code, $lang) {
-    if ($lang !== 'vb') return array();
+    $supporting_languages = array('csharp', 'vb');
+
+    if (!in_array($lang, $supporting_languages))
+        return array();
+
+    $fold_begin_marks = array('/^\s*#Region/', '/^\s*#region/');
+    $fold_end_marks = array('/^\s*#End Region/', '/\s*#endregion/');
+
     $lines = preg_split('/\r|\n|\r\n/', $code);
-    $fold_begin = preg_grep('/^\s*#Region/', $lines);
-    $fold_end = preg_grep('/^\s*#End Region/', $lines);
+
+    $fold_begin = array();
+    foreach ($fold_begin_marks as $fbm)
+        $fold_begin = $fold_begin + preg_grep($fbm, $lines);
+
+    $fold_end = array();
+    foreach ($fold_end_marks as $fem)
+        $fold_end = $fold_end + preg_grep($fem, $lines);
+
     if (count($fold_begin) !== count($fold_end) or count($fold_begin) === 0)
         return array();
 
@@ -906,7 +926,7 @@ function hyperlight_calculate_fold_marks($code, $lang) {
     return $ret;
 }
 
-function hyperlight_apply_fold_marks($code, $fold_marks) {
+function hyperlight_apply_fold_marks($code, array $fold_marks) {
     if ($fold_marks === null or count($fold_marks) === 0)
         return $code;
 

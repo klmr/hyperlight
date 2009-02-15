@@ -4,7 +4,7 @@ class XmlLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'XML',
-            parent::VERSION => '0.2',
+            parent::VERSION => '0.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -42,7 +42,8 @@ class XmlLanguage extends HyperLanguage {
         ));
 
         $this->addMappings(array(
-            'attribute-name' => 'attribute',
+            'attribute' => 'keyword type',
+            'cdata' => '',
             'value double' => 'string',
             'value single' => 'string',
             'entity' => 'escaped',

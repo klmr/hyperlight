@@ -1,0 +1,28 @@
+.source-code {
+    background: #3F3F3F;
+    color: #DCDCCC;
+}
+
+.source-code .comment {
+    color: #7F9F7F;
+    font-style: italic;
+}
+
+.source-code .comment .todo {
+    color: #DFDFDF;
+    font-weight: bold;
+}
+
+.source-code .identifier {
+    color: #EFDCBC;
+}
+
+.source-code .keyword {
+    color: #F0DFAF;
+    font-weight: bold;
+}
+
+.source-code .keyword.builtin {
+    color: #EFEF8F;
+    font-weight: normal;
+}

@@ -1,11 +1,17 @@
 <?php
 
-require 'hyperlight.php';
-
-$colorscheme = 'vibrant-ink';
-#$colorscheme = 'zenburn';
+require('hyperlight.php');
 
 if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
+
+    $default_colorscheme = 'vibrant-ink';
+    if (isset($_GET['css'])) {
+        $colorscheme = $_GET['css'];
+        if (!file_exists("colors/$colorscheme.css"))
+            $colorscheme = $default_colorscheme;
+    }
+    else
+        $colorscheme = $default_colorscheme;
 
 function hyperlight_test($file, $lang = null) {
     if ($lang === null)
@@ -18,11 +24,11 @@ function hyperlight_test($file, $lang = null) {
         "<h2>Test for language {$pretty_name}</h2>" :
         "<h2>Test with file “{$file}” for language {$pretty_name}</h2>";
     echo "$title\n";
-    $lines = count(explode("\n", $code)) - 1;
-    echo '<ol class="line-numbers">';
-    for ($i = 0; $i < $lines; $i++)
-        echo '<li><div>&nbsp;</div></li>';
-    echo '</ol>';
+    #$lines = count(explode("\n", $code)) - 1;
+    #echo '<ol class="line-numbers">';
+    #for ($i = 0; $i < $lines; $i++)
+    #    echo '<li><div>&nbsp;</div></li>';
+    #echo '</ol>';
     ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->renderAndPrint($code); ?></pre><?php
 }
 
@@ -127,6 +133,7 @@ Hello, world!</pre>
 <?php
 
 
+hyperlight_test('csharp');
 hyperlight_test('VB');
 hyperlight_test('simple.css', 'css');
 hyperlight_test('../' . basename(__FILE__), 'php');
@@ -139,7 +146,7 @@ hyperlight_test('style.css', 'css');
 <h2>Test runs</h2>
 <?php
 
-require 'tests.php';
+require('tests.php');
 
 ?><pre><?php
 Test::run('PregMerge');

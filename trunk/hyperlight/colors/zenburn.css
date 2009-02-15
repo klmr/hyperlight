@@ -7,33 +7,56 @@
  */
 
 .source-code {
-    background: #3f3f3f;
-    color: #dcdccc;
+    background: #3F3F3F;
+    color: #DCDCCC;
 }
 
 .source-code .comment {
-    color: #7f9f7f;
+    color: #7F9F7F;
     font-style: italic;
 }
 
-.source-code .tag {
-    color: #f0efd0;
-}
-
-.source-code .identifier {
-    color: #efdcbc;
-}
-
-.source-code .keyword {
-    color: #f0dfaf;
+.source-code .comment .todo {
+    color: #DFDFDF;
     font-weight: bold;
 }
 
+.source-code .tag {
+    color: #EFEF8F;
+}
+
+.source-code .identifier {
+    color: #EFDCBC;
+}
+
+.source-code .keyword {
+    color: #F0DFAF;
+    font-weight: bold;
+}
+
+.source-code .keyword.builtin {
+    color: #EFEF8F;
+    font-weight: normal;
+}
+
 .source-code .keyword.operator {
-    color: #ffcfaf;
+    color: #FFCFAF;
+}
+
+.source-code .number {
+    color: #8CD0D3;
 }
 
 .source-code .string {
-    color: #cc9393;
+    color: #CC9393;
 }
 
+.source-code::-moz-selection, .source-code span::-moz-selection {
+    background: #70D2B3;
+    color: #233322;
+}
+
+.source-code::selection, .source-code span::selection {
+    background: yellow;
+    color: black;
+}

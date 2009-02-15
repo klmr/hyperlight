@@ -1,0 +1,22 @@
+/// <summary id="a>b">This is a doc comment</summary>
+static bool ContainsFragment(string[] paths, string fragment)
+{
+#region Foobar
+
+    /*
+     * Test comment spanning some lines.
+     * And then some …
+     */
+    if (paths.Length == 0) return false;
+    // paths **must** be pre-sorted via Array.Sort(paths);
+    int index = Array.BinarySearch(paths, fragment);
+    // we want the index of the *next highest* path
+    if (index < 0) { // no match
+        index = ~index; 
+    } else { // exact match
+        index++; // for strict substring (non-equal)
+    }
+    return index < paths.Length && paths[index].StartsWith(fragment);
+
+#endregion
+}
