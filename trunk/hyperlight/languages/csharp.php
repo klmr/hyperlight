@@ -46,8 +46,8 @@ class CsharpLanguage extends HyperLanguage {
                     'internal', 'lock', 'namespace', 'operator', 'out', 'override',
                     'params', 'private', 'protected', 'public', 'readonly', 'ref',
                     'return', 'sealed', 'static', 'struct', 'switch', 'throw',
-                    'try', 'unchecked', 'unsafe', 'using', 'virtual', 'volatile',
-                    'while'
+                    'try', 'unchecked', 'unsafe', 'using', 'var', 'virtual',
+                    'volatile', 'while'
                 ),
                 'type' => array(
                     'bool', 'byte', 'char', 'decimal', 'double', 'float', 'int',
@@ -62,7 +62,7 @@ class CsharpLanguage extends HyperLanguage {
                 ),
                 'preprocessor' => '/#(?:if|else|elif|endif|define|undef|warning|error|line|region|endregion)/'
             ),
-            'identifier' => Rule::C_IDENTIFIER,
+            'identifier' => '/@?[a-z_][a-z0-9_]*/i',
         ));
     }
 }

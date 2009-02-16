@@ -67,6 +67,9 @@ function dump($obj, $descr = null) {
     return true;
 }
 
+/**
+ * Raised when the grammar offers a rule that has not been defined.
+ */
 class NoMatchingRuleException extends Exception {
     public function __construct($states, $position, $code) {
         $state = array_pop($states);
@@ -76,6 +79,8 @@ class NoMatchingRuleException extends Exception {
         );
     }
 
+    // Try to extract the location of the error more or less precisely.
+    // Only used for a comprehensive display.
     private function errorSurrounding($code, $pos) {
         $size = 10;
         $begin = $pos < $size ? 0 : $pos - $size;

@@ -120,7 +120,8 @@ pre { font-size: 1em; line-height: 16px; }
 
     <h2>A few small tests:</h2>
 
-    <p>Look, ma: Inline code. Start off by writing <?php hyperlight('#include <iostream>', 'cpp', 'code'); ?> at the beginning of your newly-created <code>main.cpp</code> file.
+    <p>Look, ma: Inline code. Start off by writing <?php hyperlight('#include <iostream>', 'cpp', 'code'); ?>
+    at the beginning of your newly-created <code>main.cpp</code> file.
     Then you can insert the following code below:</p>
     <?php hyperlight('int main() {
     std::cout << "Hello, world!" << std::endl;
@@ -133,6 +134,7 @@ Hello, world!</pre>
 <?php
 
 
+hyperlight_test('python');
 hyperlight_test('csharp');
 hyperlight_test('VB');
 hyperlight_test('simple.css', 'css');
