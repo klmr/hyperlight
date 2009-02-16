@@ -16,6 +16,7 @@ static bool ContainsFragment(string[] paths, string fragment)
     } else { // exact match
         index++; // for strict substring (non-equal)
     }
+    var @return = 123;
     return index < paths.Length && paths[index].StartsWith(fragment);
 
 #endregion

@@ -1,0 +1,43 @@
+# vim:fileencoding=utf-8
+
+if 1900 < year < 2100 and 1 <= month <= 12 \
+   and 1 <= day <= 31 and 0 <= hour < 24 \
+   and 0 <= minute < 60 and 0 <= second < 60:   # Looks like a valid date
+        return 1
+
+month_names = ['Januari', 'Februari', 'Maart',      # These are the
+               'April',   'Mei',      'Juni',       # Dutch names
+               'Juli',    'Augustus', 'September',  # for the months
+               'Oktober', 'November', 'December']   # of the year
+
+def perm(l):
+        # Compute the list of all permutations of l
+    if len(l) <= 1:
+                  return [l]
+    r = []
+    for i in range(len(l)):
+             s = l[:i] + l[i+1:]
+             p = perm(s)
+             for x in p:
+              r.append(l[i:i+1] + x)
+    return r
+
+7     2147483647                        0o177    0b100110111
+3     79228162514264337593543950336     0o377    0x100000000
+      79228162514264337593543950336              0xdeadbeef
+
+3.14    10.    .001    1e100    3.14e-10    0e0
+
+3.14j   10.j    10j     .001j   1e100j  3.14e-10j
+
+'foobar \'x '
+"foobar \"x "
+""
+"\N{AMPERSAND}"
+'''longstring'''
+"""also very
+long"""
+r'foo\' \U1234'
+R'foo\' \U1234'
+b'cfg'
+B"axc"
