@@ -43,10 +43,18 @@
  *
  */
 
+/**
+ * Hyperlight source code highlighter for PHP.
+ * @package hyperlight
+ */
+
+/** @ignore */
 require_once('preg_helper.php');
 
 if (!function_exists('array_peek')) {
-    /** This does exactly what you think it does. */
+    /**
+     * @internal
+     * This does exactly what you think it does. */
     function array_peek(array &$array) {
         $cnt = count($array);
         return $cnt === 0 ? null : $array[$cnt - 1];
@@ -71,6 +79,7 @@ function dump($obj, $descr = null) {
  * Raised when the grammar offers a rule that has not been defined.
  */
 class NoMatchingRuleException extends Exception {
+    /** @internal */
     public function __construct($states, $position, $code) {
         $state = array_pop($states);
         parent::__construct(
@@ -90,6 +99,28 @@ class NoMatchingRuleException extends Exception {
     }
 }
 
+/**
+ * Represents a nesting rule in the grammar of a language definition.
+ *
+ * Individual rules can either be represented by raw strings ("simple" rules) or
+ * by a nesting rule. Nesting rules specify where they can start and end. Inside
+ * a nesting rule, other rules may be applied (both simple and nesting).
+ * For example, a nesting rule may define a string literal. Inside that string,
+ * other rules may be applied that recognize escape sequences.
+ *
+ * To use a nesting rule, supply how it may start and end, e.g.:
+ * <code>
+ * $string_rule = array('string' => new Rule('/"/', '/"/'));
+ * </code>
+ * You also need to specify nested states:
+ * <code>
+ * $string_states = array('string' => 'escaped');
+ * <code>
+ * Now you can add another rule for <var>escaped</var>:
+ * <code>
+ * $escaped_rule = array('escaped' => '/\\(x\d{1,4}|.)/');
+ * </code>
+ */
 class Rule {
     /**
      * Common rules.
@@ -127,15 +158,24 @@ class Rule {
     private $_start;
     private $_end;
 
+    /** @ignore */
     public function __construct($start, $end = null) {
         $this->_start = $start;
         $this->_end = $end;
     }
 
+    /**
+     * Returns the pattern with which this rule starts.
+     * @return string
+     */
     public function start() {
         return $this->_start;
     }
 
+    /**
+     * Returns the pattern with which this rule may end.
+     * @return string
+     */
     public function end() {
         return $this->_end;
     }
@@ -828,6 +868,15 @@ class Hyperlight {
 /**
  * <var>echo</var>s a highlighted code.
  *
+ * For example, the following
+ * <code>
+ * hyperlight('<?php echo \'Hello, world\'; ?>', 'php');
+ * </code>
+ * results in:
+ * <code>
+ * <pre class="source-code php">...</pre>
+ * </code>
+ *
  * @param string $code The code.
  * @param string $lang The language of the code.
  * @param string $tag The surrounding tag to use. Optional.
@@ -867,7 +916,7 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
 /**
  * Is the same as:
  * <code>
- *  hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
+ * hyperlight(file_get_contents($filename), $lang, $tag, $attributes);
  * </code>
  * @see hyperlight()
  */

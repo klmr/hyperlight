@@ -24,6 +24,11 @@
  */
 
 /**
+ * Helper functions for the Perl-compatible regular expressions.
+ * @package preg_helper
+ */
+
+/**
  * Merges several regular expressions into one, using the indicated 'glue'.
  *
  * This function takes care of individual modifiers so it's safe to use
