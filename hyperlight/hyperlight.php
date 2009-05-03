@@ -126,6 +126,7 @@ class Rule {
      * Common rules.
      */
 
+    const ALL_WHITESPACE = '/(\s|\r|\n)+/';
     const C_IDENTIFIER = '/[a-z_][a-z0-9_]*/i';
     const C_COMMENT = '#//.*?\n|/\*.*?\*/#s';
     const C_MULTILINECOMMENT = '#/\*.*?\*/#s';
@@ -181,6 +182,22 @@ class Rule {
     }
 }
 
+/**
+ * Abstract base class of all Hyperlight language definitions.
+ *
+ * In order to define a new language definition, this class is inherited.
+ * The only function that needs to be overridden is the constructor. Helper
+ * functions from the base class can then be called to construct the grammar
+ * and store additional information.
+ * The name of the subclass must be of the schema <var>{Lang}Language</var>,
+ * where <var>{Lang}</var> is a short, unique name for the language starting
+ * with a capital letter and continuing in lower case. For example,
+ * <var>PhpLanguage</var> is a valid name. The language definition must
+ * reside in a file located at <var>languages/{lang}.php</var>. Here,
+ * <var>{lang}</var> is the all-lowercase spelling of the name, e.g.
+ * <var>languages/php.php</var>.
+ *
+ */
 abstract class HyperLanguage {
     private $_states = array();
     private $_rules = array();
@@ -204,6 +221,18 @@ abstract class HyperLanguage {
     const WEBSITE = 5;
     const EMAIL = 6;
 
+    /**
+     * Retrieves a language definition name based on a file extension.
+     *
+     * Uses the contents of the <var>languages/filetypes</var> file to
+     * guess the language definition name from a file name extension.
+     * This file has to be generated using the
+     * <var>collect-filetypes.php</var> script every time the language
+     * definitions have been changed.
+     *
+     * @param string $ext the file name extension.
+     * @return string The language definition name or <var>NULL</var>.
+     */
     public static function nameFromExt($ext) {
         if (self::$_filetypes === null) {
             $ft_content = file('languages/filetypes', 1);
@@ -788,6 +817,7 @@ class Hyperlight {
             if (
                 (
                     // Two hits at same position -- compare length
+                    // For equal lengths: first come, first serve.
                     $matches[0][1] == $closest_hit[1] and
                     strlen($matches[0][0]) > strlen($closest_hit[0])
                 ) or

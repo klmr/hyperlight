@@ -4,7 +4,7 @@ class CsharpLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'C#',
-            parent::VERSION => '0.2',
+            parent::VERSION => '0.3',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -23,12 +23,16 @@ class CsharpLanguage extends HyperLanguage {
                 'number',
                 'comment' => array('', 'doc'),
                 'keyword' => array('', 'type', 'literal', 'operator', 'preprocessor'),
-                'identifier'
+                'identifier',
+                'operator',
+                'whitespace',
             ),
             'comment doc' => 'doc',
         ));
 
         $this->addRules(array(
+            'whitespace' => Rule::ALL_WHITESPACE,
+            'operator' => '/[-+*\/%&|^!~=<>?{}()\[\].,:;]|&&|\|\||<<|>>|[-=!<>+*\/%&|^]=|<<=|>>=|->/',
             'string' => Rule::C_DOUBLEQUOTESTRING,
             'char' => Rule::C_SINGLEQUOTESTRING,
             'number' => Rule::C_NUMBER,
@@ -63,6 +67,11 @@ class CsharpLanguage extends HyperLanguage {
                 'preprocessor' => '/#(?:if|else|elif|endif|define|undef|warning|error|line|region|endregion)/'
             ),
             'identifier' => '/@?[a-z_][a-z0-9_]*/i',
+        ));
+
+        $this->addMappings(array(
+            'whitespace' => '',
+            'operator' => '',
         ));
     }
 }
