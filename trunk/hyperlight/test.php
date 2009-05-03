@@ -5,8 +5,8 @@ require('hyperlight.php');
 if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
 
     $default_colorscheme = 'vibrant-ink';
-    if (isset($_GET['css'])) {
-        $colorscheme = $_GET['css'];
+    if (isset($_GET['style'])) {
+        $colorscheme = $_GET['style'];
         if (!file_exists("colors/$colorscheme.css"))
             $colorscheme = $default_colorscheme;
     }
@@ -14,8 +14,11 @@ if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
         $colorscheme = $default_colorscheme;
 
 function hyperlight_test($file, $lang = null) {
+    global $tests;
     if ($lang === null)
         $lang = $file;
+    if (!empty($tests) and !in_array(strtolower($lang), $tests))
+        return;
     $fname = 'tests/' . strtolower($file);
     $code = file_get_contents($fname);
     $hl = new Hyperlight($lang);
@@ -81,8 +84,8 @@ pre { font-size: 1em; line-height: 16px; }
     <script type="text/javascript">
         //  Collapse and expand code folds.
         $().ready(function() {
-            $('pre .fold').hide();
-            $('pre .fold-header').toggleClass('closed');
+            //$('pre .fold').hide();
+            //$('pre .fold-header').toggleClass('closed');
             $('pre .fold-header').click(function() {
                 $(this).next().toggle('fast');
                 $(this).toggleClass('closed');
@@ -133,6 +136,14 @@ Hello, world!</pre>
     Congratulations! You've just run your first C++ program.
 <?php
 
+
+$args = array_diff_key($_GET, array('debug' => '', 'style' => ''));
+$args = array_keys($args);
+
+$tests = empty($args) ? array() : explode(',', implode(',', $args));
+
+if (!empty($tests))
+    echo '<p>Showing only test(s) <strong>' . implode(', ', $tests) . '</strong>.</p>';
 
 hyperlight_test('python');
 hyperlight_test('csharp');

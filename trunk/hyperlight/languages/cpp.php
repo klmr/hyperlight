@@ -9,7 +9,7 @@ class CppLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'C++',
-            parent::VERSION => '0.3',
+            parent::VERSION => '0.4',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -23,18 +23,22 @@ class CppLanguage extends HyperLanguage {
         $common = array(
             'string', 'char', 'number', 'comment',
             'keyword' => array('', 'type', 'literal', 'operator'),
-            'identifier'
+            'identifier',
+            'operator'
         );
 
         $this->addStates(array(
             'init' => array_merge(array('include', 'preprocessor'), $common),
             'include' => array('incpath'),
-            'preprocessor' => $common,
+            'preprocessor' => array_merge($common, array('pp_newline')),
         ));
 
         $this->addRules(array(
+            'whitespace' => RULE::ALL_WHITESPACE,
+            'operator' => '/<:|:>|<%|%>|%:|%:%:|\+\+|--|&&|\|\||::|<<|>>|##|\.\.\.|\.\*|->|->*|[-+*\/%^&|!~<>.=,;:?()\[\]\{\}]|[-+*\/%^&|=!~<>]=|<<=|>>=/',
             'include' => new Rule('/#\s*include/', '/\n/'),
-            'preprocessor' => new Rule('/#\s*\w+/', '/(?<!\\\\)\n/'),
+            'preprocessor' => new Rule('/#\s*\w+/', '/\n/'),
+            'pp_newline' => '/[^\\\\](?<bs>\\\\*?)(?P=bs)\\\\\n/',
             'incpath' => '/<[^>]*>|"[^"]*"/',
             'string' => Rule::C_DOUBLEQUOTESTRING,
             'char' => Rule::C_SINGLEQUOTESTRING,
@@ -69,6 +73,7 @@ class CppLanguage extends HyperLanguage {
         ));
 
         $this->addMappings(array(
+            'operator' => '',
             'include' => 'preprocessor',
             'incpath' => 'tag',
         ));

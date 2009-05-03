@@ -24,6 +24,10 @@
 .source-code .escaped { color: #AAA; }
 .source-code .number, .source-code .tag { color: #FFEE98; }
 .source-code .regex, .source-code .attribute { color: #44B4CC; }
+.source-code .operator { color: #888; }
+.source-code .keyword.operator { color: #F60; }
+.source-code .whitespace { background: #333; }
+.source-code .error { border-bottom: 1px solid red; }
 
 .source-code .tag .attribute { font-style: italic; }
 .source-code.xml .preprocessor .keyword { color #996; }

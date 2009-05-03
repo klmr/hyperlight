@@ -4,7 +4,7 @@ class VbLanguage extends HyperLanguage {
     public function __construct() {
         $this->setInfo(array(
             parent::NAME => 'VB',
-            parent::VERSION => '1.3',
+            parent::VERSION => '1.4',
             parent::AUTHOR => array(
                 parent::NAME => 'Konrad Rudolph',
                 parent::WEBSITE => 'madrat.net',
@@ -24,12 +24,16 @@ class VbLanguage extends HyperLanguage {
                 'keyword' => array('', 'type', 'literal', 'operator', 'preprocessor'),
                 'date',
                 'identifier',
+                'operator',
+                'whitespace',
             ),
             'string' => 'escaped',
             'comment doc' => 'doc',
         ));
 
         $this->addRules(array(
+            'whitespace' => Rule::ALL_WHITESPACE,
+            'operator' => '/[-+*\/\\\\^&.=,()<>{}]/',
             'string' => new Rule('/"/', '/"c?/i'),
             'number' => '/(?: # Integer followed by optional fractional part.
                 (?:&(?:H[0-9a-f]+|O[0-7]+)|\d+)
@@ -93,6 +97,8 @@ class VbLanguage extends HyperLanguage {
         ));
 
         $this->addMappings(array(
+            'whitespace' => '',
+            'operator' => '',
             'date' => 'tag',
         ));
     }
