@@ -11,8 +11,6 @@ The first part will focus on the end user. However, most users will probably wan
 
 = Getting Started =
 
-At this point, let’s assume that you have already downloaded and unzipped the package into its target location because let’s face it, who wants to have an umpteenth description of how to unzip an archive?
-
 To use Hyperlight, all you have to do is to include the main file into your PHP source code and invoke the highlighting function. To highlight a source code, this is all you need to do:
 
 {{{
