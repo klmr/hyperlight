@@ -97,6 +97,7 @@ function preg_merge($glue, array $expressions, array $names = array()) {
         list($sub_expr, $modifiers) = $stripped;
 
         // Re-adjust backreferences:
+        // TODO What about \R backreferences (\0 isn't allowed, though)?
         
         // We assume that the expression is correct and therefore don't check
         // for matching parentheses.
@@ -107,19 +108,16 @@ function preg_merge($glue, array $expressions, array $names = array()) {
             return false;
 
         if ($number_of_captures > 0) {
-            // NB: This looks NP-hard. Consider replacing.
             $backref_expr = '/
-                (                # Only match when not escaped:
-                    [^\\\\]      # guarantee an even number of backslashes
-                    (\\\\*?)\\2  # (twice n, preceded by something else).
-                )
-                \\\\ (\d)        # Backslash followed by a digit.
+                (?<!\\\\)        # Not preceded by a backslash,
+                ((?:\\\\\\\\)*?) # zero or more escaped backslashes,
+                \\\\ (\d+)       # followed by backslash plus digits.
             /x';
             $sub_expr = preg_replace_callback(
                 $backref_expr,
                 create_function(
                     '$m',
-                    'return $m[1] . "\\\\" . ((int)$m[3] + ' . $capture_count . ');'
+                    'return $m[1] . "\\\\" . ((int)$m[2] + ' . $capture_count . ');'
                 ),
                 $sub_expr
             );

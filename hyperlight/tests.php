@@ -230,6 +230,7 @@ class PregMergeTests {
         $r = preg_merge('', array('/(a)/', '/(b)\\1/'));
 
         Test::assert($r, 'preg_merge');
+        Test::assertNoMatch($r, 'aba');
         Test::assertMatch($r, 'abb');
         Test::assertNoMatch($r, 'ab');
         Test::assertNoMatch($r, 'xbb');
@@ -240,6 +241,8 @@ class PregMergeTests {
         Test::assertMatch($r, 'ab\\1');
 
         $r = preg_merge('', array('/(a)/', '/(b)\\\\\\1/'));
+        var_dump('/(b)\\\\\\1/');
+        var_dump($r);
 
         Test::assert($r, 'preg_merge');
         Test::assertMatch($r, 'ab\\b');
