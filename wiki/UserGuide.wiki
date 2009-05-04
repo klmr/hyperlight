@@ -1,4 +1,4 @@
-#summary User guide
+#summary A very short introduction to Hyperlight
 #labels Featured,How-To
 
 <wiki:toc max_depth="1" />
