@@ -922,23 +922,28 @@ function hyperlight($code, $lang, $tag = 'pre', array $attributes = array()) {
         die("`hyperlight` needs to know the code's language!");
     if (is_array($tag) and !empty($attributes))
         die("Can't pass array arguments for \$tag *and* \$attributes to `hyperlight`!");
-    if ($tag === '')
+    if ($tag == '')
         $tag = 'pre';
-    $lang = strtolower($lang);
+    if (is_array($tag)) {
+        $attributes = $tag;
+        $tag = 'pre';
+    }
+    $lang = htmlspecialchars(strtolower($lang));
     $class = "source-code $lang";
 
     $attr = array();
-    foreach ($attributes as $key => $value)
+    foreach ($attributes as $key => $value) {
         if ($key == 'class')
             $class .= ' ' . htmlspecialchars($value);
         else
             $attr[] = htmlspecialchars($key) . '="' .
                       htmlspecialchars($value) . '"';
+    }
 
     $attr = empty($attr) ? '' : ' ' . implode(' ', $attr);
 
     $hl = new Hyperlight($lang);
-    echo "<$tag class=\"source-code $lang\"$attr>";
+    echo "<$tag class=\"$class\"$attr>";
     $hl->renderAndPrint(trim($code));
     echo "</$tag>";
 }
