@@ -152,7 +152,7 @@ class Rule {
         |
         (?: # Just the fractional part.
             (?:\.\d+)
-            (?:e[+-]\d+)?
+            (?:e[+-]?\d+)?
         )
         /ix';
 
