@@ -2,17 +2,6 @@
 
 require('hyperlight.php');
 
-if (__FILE__ === $_SERVER['SCRIPT_FILENAME']):
-
-    $default_colorscheme = 'vibrant-ink';
-    if (isset($_GET['style'])) {
-        $colorscheme = $_GET['style'];
-        if (!file_exists("colors/$colorscheme.css"))
-            $colorscheme = $default_colorscheme;
-    }
-    else
-        $colorscheme = $default_colorscheme;
-
 function hyperlight_test($file, $lang = null) {
     global $tests;
     if ($lang === null)
@@ -35,11 +24,12 @@ function hyperlight_test($file, $lang = null) {
     ?><pre class="source-code <?php echo strtolower($lang); ?>"><?php $hl->renderAndPrint($code); ?></pre><?php
 }
 
-?><!DOCTYPE html>
+function write_prolog($title, $colorscheme, $debug) {
+    ?><!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>Hyperlight Syntax Highlighter</title>
+    <title><?php echo $title; ?></title>
     <link rel="stylesheet" type="text/css" href="colors/<?php echo $colorscheme; ?>.css"/>
     <style type="text/css">
         pre { padding: 0.5em; padding-left: 16px; }
@@ -49,61 +39,9 @@ function hyperlight_test($file, $lang = null) {
         pre .fold-header.closed { border: 1px dotted; padding: 0 0.4em; padding-left: 1px; }
         pre .fold-header.closed .dots { display: inline; }
         pre .fold-header.closed .dots:after { content: '…'; }
-        /*
-        pre .fold-header { margin-left: -16px; }
-        pre .fold-header:before { content: '– '; }
-        pre .fold-header.closed:before { content: '+ '; }
-        */
-
-pre { font-size: 1em; line-height: 16px; }
-
-        .line-numbers {
-            color: gray;
-            float: left;
-            width: 0;
-            margin: 0;
-            list-style-type: decimal;
-        }
-
-        .line-numbers li {
-            margin: 0;
-            padding: 0;
-            font-size: 0.6em;
-            font-family: Georgia;
-        }
-
-        .line-numbers li div {
-            font-family: Courier New;
-            font-size: 1.6666em;
-            line-height: 16px;
-        }
-
-        .line-numbers.hidden { visibility: hidden; }
     </style>
-    <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-    <script type="text/javascript">
-        //  Collapse and expand code folds.
-        $().ready(function() {
-            //$('pre .fold').hide();
-            //$('pre .fold-header').toggleClass('closed');
-            $('pre .fold-header').click(function() {
-                $(this).next().toggle('fast');
-                $(this).toggleClass('closed');
-            });
-        });
 
-        // Hide and show line numbers.
-        $().ready(function () {
-            $('.line-numbers').addClass('hidden');
-            $('.source-code').hover(function () {
-                $(this).prev().removeClass('hidden');
-            },
-            function() {
-                $(this).prev().addClass('hidden');
-            });
-        });
-    </script>
-<?php if (isset($_GET['debug'])): ?>
+<?php if ($debug): ?>
     <style type="text/css">
         pre span[class]:before, pre span[class]:after {
             background: #FFC;
@@ -119,8 +57,27 @@ pre { font-size: 1em; line-height: 16px; }
 <?php endif; ?>
 </head>
 <body>
-    <h1>Hyperlight tests</h1>
+    <h1><?php echo $title; ?></h1>
+<?php
+}
 
+function write_epilog() {
+    echo '</body></html>';
+}
+
+if (__FILE__ === realpath($_SERVER['SCRIPT_FILENAME'])):
+
+    $default_colorscheme = 'vibrant-ink';
+    if (isset($_GET['style'])) {
+        $colorscheme = $_GET['style'];
+        if (!file_exists("colors/$colorscheme.css"))
+            $colorscheme = $default_colorscheme;
+    }
+    else
+        $colorscheme = $default_colorscheme;
+
+    write_prolog('Hyperlight tests', $colorscheme, isset($_GET['debug']));
+?>
     <h2>A few small tests:</h2>
 
     <p>Look, ma: Inline code. Start off by writing <?php hyperlight('#include <iostream>', 'cpp', 'code'); ?>
@@ -163,5 +120,7 @@ require('tests.php');
 
 ?><pre><?php
 Test::run('PregMerge');
-?></pre>
-</body></html><?php endif; ?>
+?></pre><?php
+    write_epilog();
+
+endif; ?>
